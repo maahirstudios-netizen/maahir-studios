@@ -74,7 +74,7 @@ html.no-smooth-scroll #smooth-content{transform:none !important}
 #philoQuote{transform-origin:50% 50%;opacity:0;transform:scale(.88) translateY(18px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1.1s cubic-bezier(.16,1,.3,1)}
 #philoQuote.visible{opacity:1;transform:scale(1) translateY(0)}
 .scroll-highlight .word{color:rgba(245,240,235,.22);transition:color .6s ease;font-weight:500}
-.scroll-highlight .word.lit{color:var(--text);font-weight:700}
+.scroll-highlight .word.lit{color:var(--bg);font-weight:700}
 
 /* ==== WORK SHOWCASE: SCROLL-JACKED SLIDE SWAP ==== */
 .work-pin-spacer{position:relative;height:500vh}
@@ -169,6 +169,7 @@ html.no-smooth-scroll .hero{position:relative}
 /* split-chars: individual letters revealed with a tight stagger + blur-in,
    used on the hero title and philosophy quote — the two headlines doing
    the heaviest lifting, so they get the most granular reveal treatment */
+.split-chars .char-word{display:inline-block;white-space:nowrap}
 .split-chars .char{display:inline-block;overflow:hidden;vertical-align:top}
 .split-chars .char span{display:inline-block;transform:translateY(100%);opacity:0;filter:blur(5px);transition:transform .55s cubic-bezier(.16,1,.3,1),opacity .4s ease,filter .4s ease}
 .split-chars.visible .char span{transform:translateY(0);opacity:1;filter:blur(0)}
@@ -306,7 +307,17 @@ html.no-smooth-scroll .hero{position:relative}
 
 /* ==== FOOTER ==== */
 .footer{padding:100px 40px 60px;background:var(--text);color:var(--bg);position:relative;overflow:hidden}
-.footer-hero{font-size:clamp(4rem,12vw,14rem);font-weight:900;letter-spacing:-.05em;line-height:.8;color:transparent;-webkit-text-stroke:1px rgba(245,240,235,.15);margin-bottom:80px;user-select:none}
+.footer-hero{font-size:clamp(4rem,12vw,14rem);font-weight:900;letter-spacing:-.05em;line-height:.8;color:transparent;-webkit-text-stroke:1px rgba(245,240,235,.15);margin-bottom:80px;user-select:none;animation:tubelightFlicker 6s linear infinite;will-change:text-shadow}
+@keyframes tubelightFlicker{
+  0%,2%{text-shadow:none;-webkit-text-stroke-color:rgba(245,240,235,.15)}
+  3%{text-shadow:0 0 14px rgba(201,168,76,.55),0 0 30px rgba(201,168,76,.25);-webkit-text-stroke-color:rgba(201,168,76,.5)}
+  5%,6%{text-shadow:none;-webkit-text-stroke-color:rgba(245,240,235,.15)}
+  8%,29%{text-shadow:0 0 16px rgba(201,168,76,.55),0 0 34px rgba(201,168,76,.25);-webkit-text-stroke-color:rgba(201,168,76,.55)}
+  31%{text-shadow:0 0 4px rgba(201,168,76,.15);-webkit-text-stroke-color:rgba(245,240,235,.2)}
+  33%,59%{text-shadow:0 0 16px rgba(201,168,76,.55),0 0 34px rgba(201,168,76,.25);-webkit-text-stroke-color:rgba(201,168,76,.55)}
+  61%{text-shadow:none;-webkit-text-stroke-color:rgba(245,240,235,.15)}
+  64%,100%{text-shadow:0 0 16px rgba(201,168,76,.55),0 0 34px rgba(201,168,76,.25);-webkit-text-stroke-color:rgba(201,168,76,.55)}
+}
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:60px}
 @media(max-width:900px){.footer-grid{grid-template-columns:1fr}}
 .footer-brand{font-size:1.1rem;font-weight:700;letter-spacing:-.01em;margin-bottom:8px}
@@ -382,7 +393,7 @@ html.no-smooth-scroll .hero{position:relative}
   .asymmetric{padding-top:0;padding-bottom:0;gap:16px}
   .asymmetric .content,.asymmetric .side-label{padding:24px 22px;border-radius:16px;background:rgba(255,255,255,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
   .asymmetric .side-label{min-height:auto}
-  .about-scroll-row img{height:160px}
+  .about-photo-scroll{display:none}
   .work-header{padding:0 20px 40px;gap:16px;align-items:flex-start;flex-direction:column}
   .work-track{padding:0 20px 40px;gap:20px}
   .work-panel{flex-basis:88vw}
@@ -1032,7 +1043,11 @@ if (!reduceMotion) {
       .split(/(<[^>]+>)/g)
       .map(chunk => {
         if (/^<[^>]+>$/.test(chunk)) return chunk; // pass any real tag through untouched
-        return chunk.split('').map(c => c === ' ' ? ' ' : `<span class="char"><span>${c}</span></span>`).join('');
+        return chunk.split(' ').map(word => {
+          if (!word) return '';
+          const chars = word.split('').map(c => `<span class="char"><span>${c}</span></span>`).join('');
+          return `<span class="char-word">${chars}</span>`;
+        }).join(' ');
       })
       .join('');
   });
