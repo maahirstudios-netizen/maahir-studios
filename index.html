@@ -89,8 +89,10 @@ html.no-smooth-scroll #smooth-content{transform:none !important}
 .work-pin-progress{position:absolute;bottom:24px;left:6vw;right:6vw;height:2px;background:rgba(245,240,235,.15);border-radius:2px;overflow:hidden}
 .work-pin-progress span{display:block;height:100%;width:0%;background:var(--gold)}
 html.no-smooth-scroll .work-pin-spacer{height:auto}
-html.no-smooth-scroll .work-pin{position:relative;height:auto;display:block;padding:40px 0}
+html.no-smooth-scroll .work-pin{position:relative;height:auto;display:block;padding:40px 20px}
 html.no-smooth-scroll .work-pin-slide{position:relative;inset:auto;opacity:1;transform:none;margin-bottom:24px}
+html.no-smooth-scroll .work-pin-slide img,html.no-smooth-scroll .work-pin-slide .work-pin-fallback{width:100%}
+html.no-smooth-scroll .work-pin-label{position:static;transform:none;display:block;text-align:center;margin-top:12px;opacity:.6}
 html.no-smooth-scroll .work-pin-progress{display:none}
 
 /* ==== HERO PIN SPACER ==== */
@@ -293,8 +295,12 @@ html.no-smooth-scroll .hero{position:relative}
 .footer-bottom{margin-top:80px;padding-top:24px;border-top:1px solid rgba(245,240,235,.08);display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:.6rem;color:rgba(245,240,235,.3);text-transform:uppercase;letter-spacing:.1em}
 
 /* ==== MAGNETIC CURSOR ==== */
-.mag-cursor{position:fixed;width:12px;height:12px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:100000;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .2s,height .2s}
+.mag-cursor{position:fixed;width:12px;height:12px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:100000;transform:translate(-50%,-50%) scale(1);mix-blend-mode:difference;transition:width .45s cubic-bezier(.34,1.56,.64,1),height .45s cubic-bezier(.34,1.56,.64,1),background-color .3s ease,border-color .3s ease,opacity .3s ease,transform .45s cubic-bezier(.34,1.56,.64,1)}
+.mag-cursor::after{content:'';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--bg);opacity:0;transition:opacity .25s ease}
 .mag-cursor.expanded{width:50px;height:50px;opacity:.15;background:var(--gold)}
+.mag-cursor.ring{width:34px;height:34px;background:transparent;border:1.5px solid var(--gold);mix-blend-mode:normal;opacity:.85}
+.mag-cursor.media{width:84px;height:84px;background:rgba(201,168,76,.92);mix-blend-mode:normal;opacity:1}
+.mag-cursor.media::after{content:'View';opacity:1}
 
 /* ==== ANIMATIONS ==== */
 @keyframes slideUp{from{transform:translateY(105%)}to{transform:translateY(0)}}
@@ -352,8 +358,9 @@ html.no-smooth-scroll .hero{position:relative}
   .asymmetric,.services,.shop-section,.testi-section,.footer{padding-left:20px;padding-right:20px}
   .asymmetric{padding-top:100px;padding-bottom:100px;gap:28px}
   .asymmetric .content,.asymmetric .side-label{padding:26px 24px;border-radius:16px}
-  .about-photo-scroll{gap:8px}
-  .about-scroll-row{gap:10px}
+  .about-photo-scroll{gap:8px;align-items:center;top:0;bottom:auto;height:220px;inset:auto 0 auto 0}
+  .about-scroll-row{gap:10px;height:220px}
+  .about-scroll-row img{height:220px}
   .work-header{padding:0 20px 40px;gap:16px;align-items:flex-start;flex-direction:column}
   .work-track{padding:0 20px 40px;gap:20px}
   .work-panel{flex-basis:88vw}
@@ -480,6 +487,9 @@ html.no-smooth-scroll .hero{position:relative}
 .fc-tag{font-family:var(--font-mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin-bottom:6px}
 .fc-name{font-size:.95rem;font-weight:700;color:#F5F0EB;line-height:1.2}
 .fc-location{font-size:.75rem;color:rgba(245,240,235,.55);margin-top:2px}
+.client-testimonial{position:relative;padding:0 6px 18px;margin-bottom:2px}
+.client-testimonial .quote-mark{font-family:Georgia,serif;font-size:2.4rem;line-height:.5;color:var(--gold);opacity:.55;display:block;margin-bottom:6px}
+.client-testimonial p{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:.92rem;line-height:1.5;color:var(--text);opacity:.8}
 .client-folder:hover .fc-tag,.client-folder.open .fc-tag{margin-bottom:2px}
 .client-folder:hover .fc-name,.client-folder.open .fc-name{font-size:.85rem}
 /* STAMP CARD REVEAL — postage-stamp scalloped edge emerging from a frosted glass card on scroll */
@@ -525,7 +535,7 @@ html.no-smooth-scroll .hero{position:relative}
       <div class="eyebrow">Fatemi Design System</div>
       <h1 class="hero-title">
         <span class="line1"><span>Maahir</span></span>
-        <span class="line2"><span>Studios.</span></span>
+        <span class="line2"><span>Studio.</span></span>
         <span class="line3">Where geometry meets grace.</span>
       </h1>
       <div class="hero-rule"></div>
@@ -592,12 +602,10 @@ html.no-smooth-scroll .hero{position:relative}
     <div class="about-scroll-row">
       <img loading="lazy" decoding="async" width="800" height="600" src="client-mazar-qutbi-wide-01.jpg" alt="" onerror="this.style.display='none'">
       <img loading="lazy" decoding="async" width="800" height="600" src="client-raudat-burhaniyah-wide-01.jpg" alt="" onerror="this.style.display='none'">
-      <img loading="lazy" decoding="async" width="800" height="600" src="client-buttercups-wide-01.jpg" alt="" onerror="this.style.display='none'">
       <img loading="lazy" decoding="async" width="800" height="600" src="client-khoj-bin-malak-wide-01.jpg" alt="" onerror="this.style.display='none'">
       <img loading="lazy" decoding="async" width="800" height="600" src="client-almadrasa-saifiyah-wide-01.jpg" alt="" onerror="this.style.display='none'">
       <img loading="lazy" decoding="async" width="800" height="600" src="client-mazar-qutbi-wide-01.jpg" alt="" onerror="this.style.display='none'">
       <img loading="lazy" decoding="async" width="800" height="600" src="client-raudat-burhaniyah-wide-01.jpg" alt="" onerror="this.style.display='none'">
-      <img loading="lazy" decoding="async" width="800" height="600" src="client-buttercups-wide-01.jpg" alt="" onerror="this.style.display='none'">
       <img loading="lazy" decoding="async" width="800" height="600" src="client-khoj-bin-malak-wide-01.jpg" alt="" onerror="this.style.display='none'">
       <img loading="lazy" decoding="async" width="800" height="600" src="client-almadrasa-saifiyah-wide-01.jpg" alt="" onerror="this.style.display='none'">
     </div>
@@ -724,49 +732,52 @@ html.no-smooth-scroll .hero{position:relative}
     <h2 class="fade-scroll split-text">Trusted by<br>institutions and brands.</h2>
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;">
-    <div class="client-folder reveal-item" tabindex="0" role="button" aria-label="Mazar e Qutbi — view work">
-      <div class="folder-card fc-1"><img loading="lazy" decoding="async" width="800" height="600" src="client-mazar-qutbi-signage-02.jpg" alt="" onerror="this.style.opacity=0"></div>
-      <div class="folder-card fc-2"><img loading="lazy" decoding="async" width="800" height="600" src="client-mazar-qutbi-signage-03.jpg" alt="" onerror="this.style.opacity=0"></div>
-      <div class="folder-card fc-cover">
-        <div class="fc-tag">Religious Institution</div>
-        <div class="fc-name">Mazar e Qutbi</div>
-        <div class="fc-location">Ahmedabad</div>
+    <div class="reveal-item">
+      <div class="client-testimonial"><span class="quote-mark">&ldquo;</span><p>Professional, creative, and always on point — every brochure, banner, and ID card reflected genuine care.</p></div>
+      <div class="client-folder" tabindex="0" role="button" aria-label="Mazar e Qutbi — view work">
+        <div class="folder-card fc-1"><img loading="lazy" decoding="async" width="800" height="600" src="client-mazar-qutbi-signage-02.jpg" alt="" onerror="this.style.opacity=0"></div>
+        <div class="folder-card fc-2"><img loading="lazy" decoding="async" width="800" height="600" src="client-mazar-qutbi-signage-03.jpg" alt="" onerror="this.style.opacity=0"></div>
+        <div class="folder-card fc-cover">
+          <div class="fc-tag">Religious Institution</div>
+          <div class="fc-name">Mazar e Qutbi</div>
+          <div class="fc-location">Ahmedabad</div>
+        </div>
       </div>
     </div>
-    <div class="client-folder reveal-item" tabindex="0" role="button" aria-label="Raudat il Ilm il Burhaniyah — view work">
-      <div class="folder-card fc-1"><img loading="lazy" decoding="async" width="800" height="600" src="client-raudat-burhaniyah-brochure-02.jpg" alt="" onerror="this.style.opacity=0"></div>
-      <div class="folder-card fc-2"><img loading="lazy" decoding="async" width="800" height="600" src="client-raudat-burhaniyah-brochure-03.jpg" alt="" onerror="this.style.opacity=0"></div>
-      <div class="folder-card fc-cover">
-        <div class="fc-tag">Educational Institution</div>
-        <div class="fc-name">Raudat il Ilm il Burhaniyah</div>
-        <div class="fc-location">Paris</div>
+    <div class="reveal-item">
+      <div class="client-testimonial"><span class="quote-mark">&ldquo;</span><p>On time, on vision — their presentation video and project report exceeded what we imagined.</p></div>
+      <div class="client-folder" tabindex="0" role="button" aria-label="Raudat il Ilm il Burhaniyah — view work">
+        <div class="folder-card fc-1"><img loading="lazy" decoding="async" width="800" height="600" src="client-raudat-burhaniyah-brochure-02.jpg" alt="" onerror="this.style.opacity=0"></div>
+        <div class="folder-card fc-2"><img loading="lazy" decoding="async" width="800" height="600" src="client-raudat-burhaniyah-brochure-03.jpg" alt="" onerror="this.style.opacity=0"></div>
+        <div class="folder-card fc-cover">
+          <div class="fc-tag">Educational Institution</div>
+          <div class="fc-name">Raudat il Ilm il Burhaniyah</div>
+          <div class="fc-location">Paris</div>
+        </div>
       </div>
     </div>
-    <div class="client-folder reveal-item" tabindex="0" role="button" aria-label="Butter Cups — view work">
-      <div class="folder-card fc-1"><img loading="lazy" decoding="async" width="800" height="600" src="client-buttercups-packaging-02.jpg" alt="" onerror="this.style.opacity=0"></div>
-      <div class="folder-card fc-2"><img loading="lazy" decoding="async" width="800" height="600" src="client-buttercups-packaging-03.jpg" alt="" onerror="this.style.opacity=0"></div>
-      <div class="folder-card fc-cover">
-        <div class="fc-tag">Retail Brand</div>
-        <div class="fc-name">Butter Cups</div>
-        <div class="fc-location">Vapi</div>
+    <div class="reveal-item">
+      <div class="client-testimonial"><span class="quote-mark">&ldquo;</span><p>Route-guidance videos and posters delivered in hours, not days — without ever compromising quality.</p></div>
+      <div class="client-folder" tabindex="0" role="button" aria-label="Mazar-E-Syedi Khoj Bin Malak — view work">
+        <div class="folder-card fc-1"><img loading="lazy" decoding="async" width="800" height="600" src="client-khoj-bin-malak-banner-02.jpg" alt="" onerror="this.style.opacity=0"></div>
+        <div class="folder-card fc-2"><img loading="lazy" decoding="async" width="800" height="600" src="client-khoj-bin-malak-banner-03.jpg" alt="" onerror="this.style.opacity=0"></div>
+        <div class="folder-card fc-cover">
+          <div class="fc-tag">Religious Institution</div>
+          <div class="fc-name">Mazar-E-Syedi Khoj Bin Malak</div>
+          <div class="fc-location">Kaparwanj</div>
+        </div>
       </div>
     </div>
-    <div class="client-folder reveal-item" tabindex="0" role="button" aria-label="Mazar-E-Syedi Khoj Bin Malak — view work">
-      <div class="folder-card fc-1"><img loading="lazy" decoding="async" width="800" height="600" src="client-khoj-bin-malak-banner-02.jpg" alt="" onerror="this.style.opacity=0"></div>
-      <div class="folder-card fc-2"><img loading="lazy" decoding="async" width="800" height="600" src="client-khoj-bin-malak-banner-03.jpg" alt="" onerror="this.style.opacity=0"></div>
-      <div class="folder-card fc-cover">
-        <div class="fc-tag">Religious Institution</div>
-        <div class="fc-name">Mazar-E-Syedi Khoj Bin Malak</div>
-        <div class="fc-location">Kaparwanj</div>
-      </div>
-    </div>
-    <div class="client-folder reveal-item" tabindex="0" role="button" aria-label="Al Madrasa Tus Saifiyah — view work">
-      <div class="folder-card fc-1"><img loading="lazy" decoding="async" width="800" height="600" src="client-almadrasa-saifiyah-poster-02.jpg" alt="" onerror="this.style.opacity=0"></div>
-      <div class="folder-card fc-2"><img loading="lazy" decoding="async" width="800" height="600" src="client-almadrasa-saifiyah-poster-03.jpg" alt="" onerror="this.style.opacity=0"></div>
-      <div class="folder-card fc-cover">
-        <div class="fc-tag">Educational Institution</div>
-        <div class="fc-name">Al Madrasa Tus Saifiyah</div>
-        <div class="fc-location">Vapi</div>
+    <div class="reveal-item">
+      <div class="client-testimonial"><span class="quote-mark">&ldquo;</span><p>From highlight films to a 20-meter printed collage — every piece precise, creative, unforgettable.</p></div>
+      <div class="client-folder" tabindex="0" role="button" aria-label="Al Madrasa Tus Saifiyah — view work">
+        <div class="folder-card fc-1"><img loading="lazy" decoding="async" width="800" height="600" src="client-almadrasa-saifiyah-poster-02.jpg" alt="" onerror="this.style.opacity=0"></div>
+        <div class="folder-card fc-2"><img loading="lazy" decoding="async" width="800" height="600" src="client-almadrasa-saifiyah-poster-03.jpg" alt="" onerror="this.style.opacity=0"></div>
+        <div class="folder-card fc-cover">
+          <div class="fc-tag">Educational Institution</div>
+          <div class="fc-name">Al Madrasa Tus Saifiyah</div>
+          <div class="fc-location">Vapi</div>
+        </div>
       </div>
     </div>
   </div>
@@ -779,28 +790,23 @@ html.no-smooth-scroll .hero{position:relative}
   <div class="work-pin" id="workPin">
     <div class="work-pin-slide" data-i="0">
       <img loading="lazy" decoding="async" width="800" height="600" src="client-mazar-qutbi-wide-01.jpg" alt="Mazar e Qutbi" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="work-pin-fallback">Mazar e Qutbi</div>
-      <span class="work-pin-label">01 — Mazar e Qutbi</span>
+      <div class="work-pin-fallback">01</div>
+      <span class="work-pin-label">01</span>
     </div>
     <div class="work-pin-slide" data-i="1">
       <img loading="lazy" decoding="async" width="800" height="600" src="client-raudat-burhaniyah-wide-01.jpg" alt="Raudat il Ilm il Burhaniyah" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="work-pin-fallback">Raudat il Ilm il Burhaniyah</div>
-      <span class="work-pin-label">02 — Raudat il Ilm il Burhaniyah</span>
+      <div class="work-pin-fallback">02</div>
+      <span class="work-pin-label">02</span>
     </div>
     <div class="work-pin-slide" data-i="2">
-      <img loading="lazy" decoding="async" width="800" height="600" src="client-buttercups-wide-01.jpg" alt="Butter Cups" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="work-pin-fallback">Butter Cups</div>
-      <span class="work-pin-label">03 — Butter Cups</span>
+      <img loading="lazy" decoding="async" width="800" height="600" src="client-khoj-bin-malak-wide-01.jpg" alt="Mazar-E-Syedi Khoj Bin Malak" onerror="this.parentElement.classList.add('img-missing')">
+      <div class="work-pin-fallback">03</div>
+      <span class="work-pin-label">03</span>
     </div>
     <div class="work-pin-slide" data-i="3">
-      <img loading="lazy" decoding="async" width="800" height="600" src="client-khoj-bin-malak-wide-01.jpg" alt="Mazar-E-Syedi Khoj Bin Malak" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="work-pin-fallback">Mazar-E-Syedi Khoj Bin Malak</div>
-      <span class="work-pin-label">04 — Khoj Bin Malak</span>
-    </div>
-    <div class="work-pin-slide" data-i="4">
       <img loading="lazy" decoding="async" width="800" height="600" src="client-almadrasa-saifiyah-wide-01.jpg" alt="Al Madrasa Tus Saifiyah" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="work-pin-fallback">Al Madrasa Tus Saifiyah</div>
-      <span class="work-pin-label">05 — Al Madrasa Tus Saifiyah</span>
+      <div class="work-pin-fallback">04</div>
+      <span class="work-pin-label">04</span>
     </div>
     <div class="work-pin-progress"><span id="workPinBar"></span></div>
   </div>
@@ -1256,9 +1262,17 @@ if (!reduceMotion) {
       }
     };
     frameUpdaters.push(magLoop);
-    document.querySelectorAll('a,.service-row,.work-panel,.btn,.product-link').forEach(el => {
+    document.querySelectorAll('.btn').forEach(el => {
       el.addEventListener('mouseenter', () => magCursor && magCursor.classList.add('expanded'));
       el.addEventListener('mouseleave', () => magCursor && magCursor.classList.remove('expanded'));
+    });
+    document.querySelectorAll('.work-panel,.gallery-item,.client-folder,.product-link,.folder-card').forEach(el => {
+      el.addEventListener('mouseenter', () => magCursor && magCursor.classList.add('media'));
+      el.addEventListener('mouseleave', () => magCursor && magCursor.classList.remove('media'));
+    });
+    document.querySelectorAll('a:not(.btn), .service-row').forEach(el => {
+      el.addEventListener('mouseenter', () => magCursor && !el.closest('.work-panel,.gallery-item,.client-folder') && magCursor.classList.add('ring'));
+      el.addEventListener('mouseleave', () => magCursor && magCursor.classList.remove('ring'));
     });
 
     // Logo rotation now handled entirely by lightweight CSS animation (see .ms-logo-wrap)
