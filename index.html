@@ -6,11 +6,11 @@
 <title>Maahir Studio — Premium Design Assets & Brand Systems</title>
 <meta name="description" content="Maahir Studio — graphic design, motion design, and video editing studio. Premium AI, CDR, and print-ready design files, plus contract-basis creative work.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://maahirstudios-netizen.github.io/maahir-studios/">
+<link rel="canonical" href="https://maahirstudio.site/">
 <meta property="og:title" content="Maahir Studio — Premium Design Assets">
 <meta property="og:description" content="Graphic design, motion design, and video editing. Premium design files plus contract-basis creative work.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://maahirstudios-netizen.github.io/maahir-studios/">
+<meta property="og:url" content="https://maahirstudio.site/">
 <meta name="theme-color" content="#0F0F0F">
 <link rel="icon" type="image/png" sizes="512x512" href="favicon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -227,7 +227,40 @@ html.no-smooth-scroll .hero{position:relative}
 .pillar-icon{width:38px;height:38px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(201,168,76,.12);transition:transform .55s cubic-bezier(.34,1.56,.64,1),background .4s ease;transform-origin:50% 78%}
 .pillar-icon svg{width:20px;height:20px;stroke:var(--gold-dark);fill:none;stroke-width:1.6;transition:stroke .4s ease}
 
-/* ==== FOLDER-TOUCH REACTION ==== */
+/* ==== QUOTE WIZARD (one-question-at-a-time contact flow) ==== */
+.qw-section{position:relative;padding:120px 40px;display:flex;align-items:center;justify-content:center;background:var(--bg-warm)}
+.qw-card{position:relative;width:100%;max-width:480px;background:rgba(255,255,255,.85);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,.6);border-radius:28px;box-shadow:0 20px 60px rgba(15,15,15,.1),inset 0 1px 0 rgba(255,255,255,.8);padding:44px 40px 40px;overflow:hidden}
+.qw-eyebrow{display:block;text-align:center;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);margin-bottom:28px}
+.qw-eyebrow b{color:var(--text);font-weight:700}
+.qw-progress{display:flex;justify-content:center;gap:8px;margin-bottom:28px}
+.qw-dot{width:8px;height:8px;border-radius:50%;background:rgba(15,15,15,.15);transition:background .4s ease,transform .4s ease}
+.qw-dot.done{background:#3fb26f}
+.qw-dot.active{background:var(--gold);transform:scale(1.25)}
+.qw-step-label{text-align:center;font-family:var(--font-mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+.qw-step{display:none;animation:qwIn .5s cubic-bezier(.16,1,.3,1)}
+.qw-step.active{display:block}
+@keyframes qwIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.qw-step h3{font-family:var(--font-serif);font-size:1.6rem;font-weight:700;text-align:center;line-height:1.3;margin-bottom:26px}
+.qw-options{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:16px}
+.qw-opt{font-family:var(--font-sans);font-size:.92rem;font-weight:600;background:rgba(15,15,15,.04);border:1px solid var(--border);border-radius:12px;padding:14px 20px;cursor:pointer;transition:all .25s ease;color:var(--text)}
+.qw-opt:hover{border-color:var(--gold)}
+.qw-opt.selected{background:var(--text);color:var(--bg);border-color:var(--text)}
+.qw-divider{text-align:center;font-family:var(--font-mono);font-size:.65rem;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin:14px 0}
+.qw-custom,.qw-contact{width:100%;font-family:var(--font-sans);font-size:1rem;padding:15px 18px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.7);color:var(--text);margin-bottom:18px;transition:border-color .25s ease}
+.qw-custom:focus,.qw-contact:focus{outline:none;border-color:var(--gold)}
+.qw-next,.qw-submit{width:100%;font-family:var(--font-mono);font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;background:var(--text);color:var(--bg);border:none;border-radius:40px;padding:16px;cursor:pointer;transition:all .3s ease}
+.qw-next:disabled,.qw-submit:disabled{background:rgba(15,15,15,.12);color:rgba(15,15,15,.35);cursor:not-allowed}
+.qw-next:not(:disabled):hover,.qw-submit:not(:disabled):hover{background:var(--gold);color:#0F0F0F}
+.qw-back{display:block;margin:14px auto 0;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);background:none;border:none;cursor:pointer;text-decoration:underline}
+.qw-done{display:none;text-align:center;animation:qwIn .5s cubic-bezier(.16,1,.3,1)}
+.qw-done.active{display:block}
+.qw-done-dots{color:#3fb26f;font-size:1.4rem;letter-spacing:4px;margin-bottom:14px}
+.qw-check{width:64px;height:64px;border-radius:50%;background:#3fb26f;color:#fff;font-size:1.8rem;display:flex;align-items:center;justify-content:center;margin:20px auto}
+.qw-done-sub{font-size:.9rem;color:var(--text-muted);line-height:1.6;margin-top:6px}
+.qw-done-sub a{color:var(--gold-dark);font-weight:600}
+@media(max-width:640px){.qw-section{padding:80px 20px}.qw-card{padding:36px 26px 32px}.qw-step h3{font-size:1.35rem}}
+
+
 /* A tactile "pop open" reaction for icons/folders on hover, tap or focus — a quick spring bounce + open-lid tilt + colour flip, so touching a folder feels alive. */
 .pillar-card-inner:hover .pillar-icon,.pillar-card-inner:focus-visible .pillar-icon,.pillar-card-inner.is-touched .pillar-icon{
   transform:scale(1.22) rotate(-8deg) translateY(-3px);
@@ -843,8 +876,62 @@ html.no-smooth-scroll .hero{position:relative}
 </section>
 </div>
 
+<!-- QUOTE WIZARD: one-question-at-a-time contact flow -->
+<section class="qw-section" id="contact">
+  <div class="qw-card">
+    <span class="qw-eyebrow">ONE QUESTION AT A <b>TIME</b></span>
+    <div class="qw-progress">
+      <span class="qw-dot active" data-dot="1"></span>
+      <span class="qw-dot" data-dot="2"></span>
+      <span class="qw-dot" data-dot="3"></span>
+    </div>
+
+    <div class="qw-step active" data-step="1">
+      <div class="qw-step-label">Step 1 of 3</div>
+      <h3>What do you need done?</h3>
+      <div class="qw-options">
+        <button class="qw-opt" type="button" data-value="Graphics">Graphics</button>
+        <button class="qw-opt" type="button" data-value="Motion / Video">Motion / Video</button>
+        <button class="qw-opt" type="button" data-value="Brand System">Brand System</button>
+      </div>
+      <div class="qw-divider">or type it yourself</div>
+      <input type="text" class="qw-custom" data-custom-for="1" placeholder="e.g. a logo for our madrasa event">
+      <button class="qw-next" type="button" data-goto="2" disabled>Continue →</button>
+    </div>
+
+    <div class="qw-step" data-step="2">
+      <div class="qw-step-label">Step 2 of 3</div>
+      <h3>What's the scope?</h3>
+      <div class="qw-options">
+        <button class="qw-opt" type="button" data-value="Quick one-off">Quick one-off</button>
+        <button class="qw-opt" type="button" data-value="Ongoing project">Ongoing project</button>
+        <button class="qw-opt" type="button" data-value="Not sure yet">Not sure yet</button>
+      </div>
+      <div class="qw-divider">or describe it briefly</div>
+      <input type="text" class="qw-custom" data-custom-for="2" placeholder="e.g. one video, roughly 60 seconds">
+      <button class="qw-next" type="button" data-goto="3" disabled>Continue →</button>
+      <button class="qw-back" type="button" data-back="1">← Back</button>
+    </div>
+
+    <div class="qw-step" data-step="3">
+      <div class="qw-step-label">Step 3 of 3</div>
+      <h3>Where do we reach you?</h3>
+      <input type="text" class="qw-contact" id="qwContact" placeholder="WhatsApp number or email">
+      <button class="qw-submit" type="button" id="qwSubmit" disabled>Send →</button>
+      <button class="qw-back" type="button" data-back="2">← Back</button>
+    </div>
+
+    <div class="qw-done" id="qwDone">
+      <div class="qw-done-dots">•••</div>
+      <h3 id="qwDoneTitle">Done — quote on its way.</h3>
+      <div class="qw-check" id="qwCheck">✓</div>
+      <p class="qw-done-sub" id="qwDoneSub">Got it — we'll get back to you shortly.</p>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
-<footer class="footer" id="contact">
+<footer class="footer">
   <div class="footer-hero fade-scroll split-text">MAAHIR</div>
   <div class="footer-grid">
     <div>
@@ -1129,6 +1216,117 @@ if (!reduceMotion) {
     }, { threshold: 0.4 });
     philoObserver.observe(philoQuote);
   }
+
+  // ==== QUOTE WIZARD ====
+  (function initQuoteWizard(){
+    const card = document.querySelector('.qw-card');
+    if (!card) return;
+    const steps = Array.from(card.querySelectorAll('.qw-step'));
+    const dots = Array.from(card.querySelectorAll('.qw-dot'));
+    const doneEl = document.getElementById('qwDone');
+    const contactInput = document.getElementById('qwContact');
+    const submitBtn = document.getElementById('qwSubmit');
+    const answers = { 1:'', 2:'' };
+
+    function setDots(activeStep){
+      dots.forEach(d => {
+        const n = Number(d.dataset.dot);
+        d.classList.remove('active','done');
+        if (n < activeStep) d.classList.add('done');
+        else if (n === activeStep) d.classList.add('active');
+      });
+    }
+
+    function goTo(stepNum){
+      steps.forEach(s => s.classList.toggle('active', Number(s.dataset.step) === stepNum));
+      setDots(stepNum);
+    }
+
+    // Option buttons: selecting one clears the custom text field for that
+    // step (and vice versa) so there's always exactly one clear answer.
+    steps.forEach(step => {
+      const stepNum = Number(step.dataset.step);
+      const opts = Array.from(step.querySelectorAll('.qw-opt'));
+      const custom = step.querySelector('.qw-custom');
+      const nextBtn = step.querySelector('.qw-next');
+
+      opts.forEach(btn => {
+        btn.addEventListener('click', () => {
+          opts.forEach(o => o.classList.remove('selected'));
+          btn.classList.add('selected');
+          answers[stepNum] = btn.dataset.value;
+          if (custom) custom.value = '';
+          if (nextBtn) nextBtn.disabled = false;
+        });
+      });
+
+      if (custom) {
+        custom.addEventListener('input', () => {
+          if (custom.value.trim()) {
+            opts.forEach(o => o.classList.remove('selected'));
+            answers[stepNum] = custom.value.trim();
+            if (nextBtn) nextBtn.disabled = false;
+          } else if (!opts.some(o => o.classList.contains('selected'))) {
+            if (nextBtn) nextBtn.disabled = true;
+          }
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => goTo(Number(nextBtn.dataset.goto)));
+      }
+      const backBtn = step.querySelector('.qw-back');
+      if (backBtn) {
+        backBtn.addEventListener('click', () => goTo(Number(backBtn.dataset.back)));
+      }
+    });
+
+    const doneTitle = document.getElementById('qwDoneTitle');
+    const doneSub = document.getElementById('qwDoneSub');
+    // Replace this with your own Formspree endpoint (formspree.io → New Form).
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xgojrqkr';
+
+    if (contactInput && submitBtn) {
+      contactInput.addEventListener('input', () => {
+        submitBtn.disabled = !contactInput.value.trim();
+      });
+      submitBtn.addEventListener('click', () => {
+        const contact = contactInput.value.trim();
+        if (!contact) return;
+        submitBtn.disabled = true;
+        const originalLabel = submitBtn.textContent;
+        submitBtn.textContent = 'Sending…';
+
+        fetch(FORMSPREE_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            need: answers[1] || 'Not specified',
+            scope: answers[2] || 'Not specified',
+            contact: contact,
+            _subject: 'New quote request — Maahir Studio site'
+          })
+        })
+        .then(res => {
+          if (!res.ok) throw new Error('Submit failed');
+          steps.forEach(s => s.classList.remove('active'));
+          dots.forEach(d => d.classList.add('done'));
+          if (doneTitle) doneTitle.textContent = 'Done — quote on its way.';
+          if (doneSub) doneSub.textContent = "Got it — we'll get back to you shortly.";
+          if (doneEl) doneEl.classList.add('active');
+        })
+        .catch(() => {
+          if (doneTitle) doneTitle.textContent = "Hmm, that didn't go through.";
+          if (doneSub) doneSub.innerHTML = `No worries — just email us directly: <a href="mailto:maahirstudios@gmail.com">maahirstudios@gmail.com</a>`;
+          if (doneEl) doneEl.classList.add('active');
+        })
+        .finally(() => {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalLabel;
+        });
+      });
+    }
+  })();
 
   // ==== WORK SHOWCASE: SCROLL-JACKED SLIDE SWAP ====
   // Scroll through the spacer holds the panel pinned full-viewport while
