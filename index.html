@@ -157,9 +157,9 @@ html.no-smooth-scroll .hero{position:relative}
 .about-scroll-row img{height:100%;width:auto;aspect-ratio:16/9;object-fit:cover;object-position:center;background:rgba(15,15,15,.05);filter:grayscale(.25);flex-shrink:0}
 @keyframes aboutScrollLeft{from{transform:translateX(-50%)}to{transform:translateX(0)}}
 .asymmetric .side-label,.asymmetric .content{position:relative;z-index:2}
-.asymmetric .content,.asymmetric .side-label{background:rgba(255,255,255,.1);backdrop-filter:blur(46px) saturate(220%) brightness(1.12);-webkit-backdrop-filter:blur(46px) saturate(220%) brightness(1.12);border:1px solid rgba(255,255,255,.4);border-radius:28px;box-shadow:0 30px 70px rgba(15,15,15,.16),inset 0 1px 1px rgba(255,255,255,.9),inset 0 -18px 30px -20px rgba(255,255,255,.35);padding:40px 44px;isolation:isolate;overflow:hidden}
-.asymmetric .content::before,.asymmetric .side-label::before{content:'';position:absolute;inset:0;background:linear-gradient(155deg,rgba(255,255,255,.65) 0%,rgba(255,255,255,0) 38%);pointer-events:none;mix-blend-mode:overlay}
-.asymmetric .content::after,.asymmetric .side-label::after{content:'';position:absolute;top:0;left:6%;right:6%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent)}
+.asymmetric .content,.asymmetric .side-label{position:relative;background:rgba(255,255,255,.12);backdrop-filter:blur(24px) saturate(180%) brightness(1.08);-webkit-backdrop-filter:blur(24px) saturate(180%) brightness(1.08);border:1px solid rgba(255,255,255,.5);border-radius:28px;box-shadow:0 8px 32px rgba(15,15,15,.1),inset 0 1px 0 rgba(255,255,255,.8),inset 0 -1px 0 rgba(255,255,255,.15);padding:40px 44px;isolation:isolate;overflow:hidden}
+.asymmetric .content::before,.asymmetric .side-label::before{content:'';position:absolute;top:-40%;left:-20%;width:90%;height:90%;background:radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.85) 0%,rgba(255,255,255,.15) 45%,transparent 70%);pointer-events:none;transform:rotate(-8deg)}
+.asymmetric .content::after,.asymmetric .side-label::after{content:'';position:absolute;bottom:0;right:0;width:60%;height:35%;background:radial-gradient(ellipse at 100% 100%,rgba(255,255,255,.3) 0%,transparent 60%);pointer-events:none}
 .asymmetric .side-label{min-height:60vh;display:flex;flex-direction:column;justify-content:center;will-change:transform}
 .asymmetric .side-label-tag{font-family:var(--font-mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.2em;color:var(--text-muted);display:block}
 .asymmetric .side-label-tag::before{content:'';display:block;width:40px;height:1px;background:var(--gold);margin-bottom:20px}
@@ -219,7 +219,9 @@ html.no-smooth-scroll .hero{position:relative}
   to{transform:translate(-50%,-50%) translateX(var(--radius,230px)) rotate(calc(-1 * var(--angle) - 360deg))}
 }
 
-.pillar-card-inner{width:150px;background:rgba(255,255,255,.92);border:1px solid var(--border);border-radius:16px;padding:18px 16px;text-align:center;cursor:pointer;transition:transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s ease,border-color .45s ease;box-shadow:0 6px 18px rgba(15,15,15,.06)}
+.pillar-card-inner{width:150px;background:rgba(255,255,255,.92);border:1px solid var(--border);border-radius:16px;padding:24px 18px;text-align:center;cursor:pointer;transition:transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s ease,border-color .45s ease;box-shadow:0 6px 18px rgba(15,15,15,.06);overflow:hidden}
+.pillar-desc{font-size:.78rem;line-height:1.5;color:var(--text-muted);max-height:0;opacity:0;transform:translateY(8px);transition:max-height .45s cubic-bezier(.16,1,.3,1),opacity .35s ease,transform .45s cubic-bezier(.16,1,.3,1),margin-top .45s ease;margin-top:0}
+.pillar-card-inner:hover .pillar-desc,.pillar-card-inner:focus-visible .pillar-desc,.pillar-card-inner.is-touched .pillar-desc{max-height:80px;opacity:1;transform:translateY(0);margin-top:10px}
 .pillar-card-inner:hover,.pillar-card-inner:focus-visible{transform:scale(1.14) translateY(-4px);box-shadow:0 26px 50px rgba(15,15,15,.16);border-color:var(--gold);z-index:5}
 .pillar-icon{width:38px;height:38px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(201,168,76,.12);transition:transform .55s cubic-bezier(.34,1.56,.64,1),background .4s ease;transform-origin:50% 78%}
 .pillar-icon svg{width:20px;height:20px;stroke:var(--gold-dark);fill:none;stroke-width:1.6;transition:stroke .4s ease}
@@ -259,12 +261,11 @@ html.no-smooth-scroll .hero{position:relative}
 .pillar-name{font-size:.92rem;font-weight:700;letter-spacing:-.01em;line-height:1.2}
 .pillar-card-inner:hover .pillar-name{color:var(--gold-dark)}
 
-.pillars-list{display:none}
-@media(max-width:820px){
-  .pillar-ring-wrap{display:none}
-  .pillars-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:640px;margin:0 auto}
-  .pillars-list .pillar-card-inner{width:100%;animation:none;transform:none}
-}
+.pillar-ring-wrap{display:none}
+.pillars-list{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:900px;margin:0 auto}
+.pillars-list .pillar-card-inner{width:100%;animation:none;transform:none;opacity:0;transform:translateY(24px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
+.pillars-list .pillar-card-inner.visible{opacity:1;transform:translateY(0)}
+@media(max-width:820px){.pillars-list{grid-template-columns:repeat(2,1fr);max-width:640px}}
 @media(max-width:480px){.pillars-list{grid-template-columns:1fr}}
 
 /* ==== PHILOSOPHY — FULL BLEED ==== */
@@ -377,12 +378,11 @@ html.no-smooth-scroll .hero{position:relative}
   .hero-desc{max-width:none}
   .hero-hex-container{width:min(78vw,360px);height:min(78vw,360px)}
   .about-outer{display:block;min-height:auto;overflow:visible;padding:70px 0}
-  .about-photo-scroll{display:none}
   .asymmetric,.services,.shop-section,.testi-section,.footer{padding-left:20px;padding-right:20px}
   .asymmetric{padding-top:0;padding-bottom:0;gap:16px}
-  .asymmetric .content,.asymmetric .side-label{padding:26px 24px;border-radius:16px;background:#fff}
+  .asymmetric .content,.asymmetric .side-label{padding:24px 22px;border-radius:16px;background:rgba(255,255,255,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
   .asymmetric .side-label{min-height:auto}
-  .about-scroll-row img{height:220px}
+  .about-scroll-row img{height:160px}
   .work-header{padding:0 20px 40px;gap:16px;align-items:flex-start;flex-direction:column}
   .work-track{padding:0 20px 40px;gap:20px}
   .work-panel{flex-basis:88vw}
@@ -499,7 +499,7 @@ html.no-smooth-scroll .hero{position:relative}
 .folder-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.92}
 .folder-card.fc-1{transform:translate(-10px,10px) rotate(-8deg) scale(.92);z-index:1}
 .folder-card.fc-2{transform:translate(10px,6px) rotate(6deg) scale(.94);z-index:2}
-.folder-card.fc-cover{z-index:3;background:rgba(201,168,76,.14);border:1px solid rgba(201,168,76,.35);backdrop-filter:blur(10px);transform:none;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;transition:left .55s cubic-bezier(.19,1,.22,1),top .55s cubic-bezier(.19,1,.22,1),width .55s cubic-bezier(.19,1,.22,1),height .55s cubic-bezier(.19,1,.22,1),padding .45s ease,box-shadow .6s ease}
+.folder-card.fc-cover{z-index:3;background:linear-gradient(to top,rgba(10,10,10,.82) 0%,rgba(10,10,10,.55) 60%,rgba(10,10,10,.3) 100%);border:1px solid rgba(201,168,76,.4);backdrop-filter:blur(6px);transform:none;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;transition:left .55s cubic-bezier(.19,1,.22,1),top .55s cubic-bezier(.19,1,.22,1),width .55s cubic-bezier(.19,1,.22,1),height .55s cubic-bezier(.19,1,.22,1),padding .45s ease,box-shadow .6s ease}
 /* OPEN: both photos move to their own clean slot side-by-side — fully
    visible, no overlap — while the caption shrinks into a small strip up top */
 .client-folder:hover .folder-card.fc-1,.client-folder.open .folder-card.fc-1{left:3%;top:32%;width:45%;height:62%;transform:rotate(-5deg) scale(1)}
@@ -507,9 +507,9 @@ html.no-smooth-scroll .hero{position:relative}
 .client-folder:hover .folder-card.fc-cover,.client-folder.open .folder-card.fc-cover{left:8%;top:2%;width:84%;height:24%;padding:10px 16px;box-shadow:0 20px 40px rgba(0,0,0,.35)}
 .client-folder:hover .folder-card,.client-folder.open .folder-card{box-shadow:0 25px 45px rgba(0,0,0,.4)}
 .client-folder:hover .fc-location,.client-folder.open .fc-location{display:none}
-.fc-tag{font-family:var(--font-mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin-bottom:6px}
-.fc-name{font-size:.95rem;font-weight:700;color:#F5F0EB;line-height:1.2}
-.fc-location{font-size:.75rem;color:rgba(245,240,235,.55);margin-top:2px}
+.fc-tag{font-family:var(--font-mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin-bottom:6px;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.fc-name{font-size:.95rem;font-weight:700;color:#F5F0EB;line-height:1.2;text-shadow:0 1px 6px rgba(0,0,0,.7)}
+.fc-location{font-size:.75rem;color:rgba(245,240,235,.75);margin-top:2px;text-shadow:0 1px 4px rgba(0,0,0,.6)}
 .client-scroll-card{opacity:.2;transform:translateY(36px) scale(.92);will-change:opacity,transform;transition:opacity .1s linear,transform .1s linear}
 .client-testimonial{position:relative;padding:0 6px 18px;margin-bottom:2px}
 .client-testimonial .quote-mark{font-family:Georgia,serif;font-size:2.4rem;line-height:.5;color:var(--gold);opacity:.55;display:block;margin-bottom:6px}
@@ -542,6 +542,7 @@ html.no-smooth-scroll .hero{position:relative}
   <div class="menu" id="siteMenu">
     <a href="#services">Services</a>
     <a href="#clients">Clients</a>
+    <a href="work.html">Work</a>
     <a href="#shop">Shop</a>
     <a href="#contact">Contact</a>
   </div>
@@ -637,12 +638,12 @@ html.no-smooth-scroll .hero{position:relative}
   <div class="asymmetric">
   <div class="side-label">
     <span class="side-label-tag">About</span>
-    <h2 class="reveal-item split-text">The craft of<br>intention.</h2>
+    <h2 class="reveal-item split-text">What We Do</h2>
   </div>
   <div class="content">
-    <p class="reveal-item">At <span class="highlight">Maahir Studio</span>, we don't simply design. We build visual systems rooted in the Fatemi tradition — where every proportion is calculated, every pattern carries meaning, and every form serves a sacred function.</p>
-    <p class="reveal-item">Our methodology draws from centuries of geometric mastery, reinterpreted through contemporary digital tools. The hexagon — six sides, infinite possibilities — is not merely our mark. It is our philosophy.</p>
-    <p class="reveal-item">From brand identities to immersive web experiences, we craft work that transcends trend and endures through time.</p>
+    <p class="reveal-item"><span class="highlight">Maahir Studio</span> is a design agency. We create graphics, motion, and video for brands, institutions, and businesses.</p>
+    <p class="reveal-item">Every project is built with clean, precise design — no clutter, no shortcuts.</p>
+    <p class="reveal-item">Need design work done? We also take on freelance and contract projects, big or small.</p>
   </div>
   </div>
 </section>
@@ -676,84 +677,53 @@ html.no-smooth-scroll .hero{position:relative}
 <!-- SERVICES -->
 <section class="services" id="services">
   <div class="services-header reveal-item">
-    <h2 class="fade-scroll split-text">Six pillars.<br>Infinite craft.</h2>
-  </div>
-
-  <div class="pillar-ring-wrap reveal-item">
-    <div class="pillar-orbit-line"></div>
-    <div class="pillar-center"><span class="num">6</span><small>Disciplines</small></div>
-    <div class="pillar-track">
-      <div class="pillar-node" style="--angle:0deg">
-        <div class="pillar-card">
-          <div class="pillar-card-inner" tabindex="0">
-            <div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M3 21l3-1 12-12-2-2L4 18l-1 3z"/><path d="M14 6l4 4"/></svg></div>
-            <div class="pillar-num">01</div>
-            <div class="pillar-name">Graphic Design</div>
-          </div>
-        </div>
-      </div>
-      <div class="pillar-node" style="--angle:60deg">
-        <div class="pillar-card">
-          <div class="pillar-card-inner" tabindex="0">
-            <div class="pillar-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4V8z" fill="currentColor" stroke="none"/></svg></div>
-            <div class="pillar-num">02</div>
-            <div class="pillar-name">Motion Design</div>
-          </div>
-        </div>
-      </div>
-      <div class="pillar-node" style="--angle:120deg">
-        <div class="pillar-card">
-          <div class="pillar-card-inner" tabindex="0">
-            <div class="pillar-icon"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="1"/><path d="M16 10l5-3v10l-5-3"/></svg></div>
-            <div class="pillar-num">03</div>
-            <div class="pillar-name">Video Editing</div>
-          </div>
-        </div>
-      </div>
-      <div class="pillar-node" style="--angle:180deg">
-        <div class="pillar-card">
-          <div class="pillar-card-inner" tabindex="0">
-            <div class="pillar-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="6" rx="1"/><rect x="4" y="14" width="16" height="6" rx="1"/></svg></div>
-            <div class="pillar-num">04</div>
-            <div class="pillar-name">Brand Systems</div>
-          </div>
-        </div>
-      </div>
-      <div class="pillar-node" style="--angle:240deg">
-        <div class="pillar-card">
-          <div class="pillar-card-inner" tabindex="0">
-            <div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M4 19h16"/></svg></div>
-            <div class="pillar-num">05</div>
-            <div class="pillar-name">Digital Products</div>
-          </div>
-        </div>
-      </div>
-      <div class="pillar-node" style="--angle:300deg">
-        <div class="pillar-card">
-          <div class="pillar-card-inner" tabindex="0">
-            <div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M7 12l3 3 7-7"/><circle cx="12" cy="12" r="9"/></svg></div>
-            <div class="pillar-num">06</div>
-            <div class="pillar-name">Contract Work</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <h2 class="fade-scroll split-text">What We Offer</h2>
   </div>
 
   <div class="pillars-list">
-    <div class="pillar-card-inner"><div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M3 21l3-1 12-12-2-2L4 18l-1 3z"/></svg></div><div class="pillar-num">01</div><div class="pillar-name">Graphic Design</div></div>
-    <div class="pillar-card-inner"><div class="pillar-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></div><div class="pillar-num">02</div><div class="pillar-name">Motion Design</div></div>
-    <div class="pillar-card-inner"><div class="pillar-icon"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="1"/></svg></div><div class="pillar-num">03</div><div class="pillar-name">Video Editing</div></div>
-    <div class="pillar-card-inner"><div class="pillar-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="6" rx="1"/></svg></div><div class="pillar-num">04</div><div class="pillar-name">Brand Systems</div></div>
-    <div class="pillar-card-inner"><div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M8 11l4 4 4-4"/></svg></div><div class="pillar-num">05</div><div class="pillar-name">Digital Products</div></div>
-    <div class="pillar-card-inner"><div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M7 12l3 3 7-7"/></svg></div><div class="pillar-num">06</div><div class="pillar-name">Contract Work</div></div>
+    <div class="pillar-card-inner">
+      <div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div>
+      <div class="pillar-num">01</div>
+      <div class="pillar-name">Graphic Design</div>
+      <div class="pillar-desc">Logos, layouts, and brand visuals that look sharp and professional.</div>
+    </div>
+    <div class="pillar-card-inner">
+      <div class="pillar-icon"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      <div class="pillar-num">02</div>
+      <div class="pillar-name">Motion Design</div>
+      <div class="pillar-desc">Animated graphics and kinetic typography that bring content to life.</div>
+    </div>
+    <div class="pillar-card-inner">
+      <div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+      <div class="pillar-num">03</div>
+      <div class="pillar-name">Video Editing</div>
+      <div class="pillar-desc">Clean cuts, color grading, and pacing for reels, ads, and brand films.</div>
+    </div>
+    <div class="pillar-card-inner">
+      <div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4.9v9.2L12 21l-9-4.9V6.9z"/><path d="M12 2v19"/><path d="M3 6.9l9 4.9 9-4.9"/></svg></div>
+      <div class="pillar-num">04</div>
+      <div class="pillar-name">Brand Systems</div>
+      <div class="pillar-desc">Complete visual identity kits — colors, type, and usage guides.</div>
+    </div>
+    <div class="pillar-card-inner">
+      <div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></div>
+      <div class="pillar-num">05</div>
+      <div class="pillar-name">Digital Products</div>
+      <div class="pillar-desc">Ready-made AI and CDR design files, available for instant download.</div>
+    </div>
+    <div class="pillar-card-inner">
+      <div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div class="pillar-num">06</div>
+      <div class="pillar-name">Contract Work</div>
+      <div class="pillar-desc">Freelance projects of any size — one graphic or a full campaign.</div>
+    </div>
   </div>
 </section>
 
 <!-- CLIENTS -->
 <section id="clients" style="padding:100px 6vw;">
   <div class="services-header reveal-item" style="margin-bottom:60px;">
-    <h2 class="fade-scroll split-text">Trusted by<br>institutions and brands.</h2>
+    <h2 class="fade-scroll split-text">Our Clients</h2>
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;">
     <div class="client-scroll-card">
@@ -805,6 +775,11 @@ html.no-smooth-scroll .hero{position:relative}
       </div>
     </div>
   </div>
+  <div style="text-align:center;margin-top:60px;">
+    <a href="work.html" class="btn" style="display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text);text-decoration:none;border:1px solid var(--border);padding:16px 32px;border-radius:40px;transition:all .35s ease;position:relative;overflow:hidden;">
+      See Full Work <span style="color:var(--gold);">→</span>
+    </a>
+  </div>
 </section>
 
 <!-- GALLERY -->
@@ -850,8 +825,8 @@ html.no-smooth-scroll .hero{position:relative}
   </div>
   <div class="philo-content">
     <div class="philo-line"></div>
-    <p class="philo-quote split-chars" id="philoQuote">"The Fatimid masters knew what we still practice: <span>perfection lives in proportion.</span>"</p>
-    <p class="philo-text scroll-highlight" id="philoText">Every pattern in nature obeys geometry. Every sacred space was built with compass and square. At Maahir Studio, powered by Fatemi Designs, we wield these same tools — not as nostalgia, but as living methodology. The hexagon is not just our mark. It is our method.</p>
+    <p class="philo-quote split-chars" id="philoQuote">Good design isn't decoration. <span>It's how a brand is understood.</span></p>
+    <p class="philo-text scroll-highlight" id="philoText">We pay attention to detail — spacing, color, timing, and clarity — because that's what makes design work. Every project gets the same level of care, whether it's a logo, a video, or a full brand system.</p>
   </div>
 </section>
 </div>
@@ -868,6 +843,7 @@ html.no-smooth-scroll .hero{position:relative}
       <h4>Navigation</h4>
       <a href="#services">Services</a>
     <a href="#clients">Clients</a>
+      <a href="work.html">Work</a>
       <a href="#shop">Shop</a>
       <a href="#contact">Contact</a>
     </div>
@@ -1252,31 +1228,11 @@ if (!reduceMotion) {
     hexObj.addEventListener('touchstart', popHex, { passive: true });
   }
 
-  // ==== ABOUT SECTION: MANUAL STICKY PIN ====
-  // Native `position:sticky` breaks once its ancestor is being transformed
-  // for the smooth-scroll effect above, so the pin is recreated by hand:
-  // while the section is in view, the label column is nudged down to hold
-  // a fixed visual offset from the top of the viewport, clamped so it
-  // never scrolls past the bottom of its own section.
-  const asymSection = document.querySelector('.asymmetric');
-  const sideLabelCol = asymSection ? asymSection.querySelector('.side-label') : null;
-  if (asymSection && sideLabelCol) {
-    const desiredTop = 120;
-    let pinTicking = false;
-    const updatePin = () => {
-      const sectionRect = asymSection.getBoundingClientRect();
-      const labelHeight = sideLabelCol.offsetHeight;
-      let offset = desiredTop - sectionRect.top;
-      const maxOffset = Math.max(0, sectionRect.height - labelHeight);
-      offset = Math.max(0, Math.min(offset, maxOffset));
-      sideLabelCol.style.transform = `translateY(${offset.toFixed(1)}px)`;
-      pinTicking = false;
-    };
-    const onPinFrame = () => { if (!pinTicking) { pinTicking = true; requestAnimationFrame(() => { pinTicking = false; }); } };
-    window.addEventListener('resize', onPinFrame);
-    updatePin();
-    frameUpdaters.push(updatePin);
-  }
+  // ==== ABOUT SECTION ====
+  // Sticky-pin sink animation removed per feedback — the background photo
+  // scroll is the priority visual here, and the heading/text now just use
+  // the simple fade-up already provided by .reveal-item, staying put so
+  // they never cover the photos or break on mobile.
 
   // ==== TYPOGRAPHY OPACITY ON SCROLL ====
   // Each .fade-scroll element's opacity is driven live by how close it is
@@ -1325,6 +1281,23 @@ if (!reduceMotion) {
     window.addEventListener('resize', updateClientCards);
     updateClientCards();
     frameUpdaters.push(updateClientCards);
+  }
+
+  // ==== PILLARS GRID: STAGGERED REVEAL ====
+  // Simple, robust fade-up-in-sequence — works identically on every screen
+  // size since it's plain grid layout, no fixed-pixel radius math involved.
+  const pillarCards = Array.from(document.querySelectorAll('.pillars-list .pillar-card-inner'));
+  if (pillarCards.length) {
+    const pillarObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const idx = pillarCards.indexOf(entry.target);
+          setTimeout(() => entry.target.classList.add('visible'), Math.max(idx, 0) * 90);
+          pillarObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    pillarCards.forEach(c => pillarObserver.observe(c));
   }
 
   // ==== FOLDER-TOUCH REACTION ====

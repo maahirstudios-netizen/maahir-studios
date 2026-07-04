@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work — Maahir Studio</title>
+<meta name="description" content="Selected work by Maahir Studio — graphic design, motion design, and video editing projects for clients across India and abroad.">
+<link rel="icon" type="image/png" sizes="512x512" href="favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0F0F0F;
+  --text:#F5F0EB;
+  --text-muted:rgba(245,240,235,.6);
+  --border:rgba(245,240,235,.1);
+  --gold:#C9A84C;
+  --font-sans:'Space Grotesk',sans-serif;
+  --font-serif:'Playfair Display',serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--font-sans);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+
+.top-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:24px 6vw;background:linear-gradient(to bottom,rgba(15,15,15,.85),transparent)}
+.top-nav .logo{font-weight:700;font-size:1.05rem;letter-spacing:-.01em;text-decoration:none;display:flex;align-items:center;gap:10px}
+.top-nav .logo span{color:var(--gold)}
+.back-link{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;text-decoration:none;color:var(--text-muted);transition:color .3s}
+.back-link:hover{color:var(--gold)}
+
+.work-hero{padding:180px 6vw 60px}
+.work-hero h1{font-family:var(--font-serif);font-size:clamp(2.8rem,7vw,6rem);line-height:.98;letter-spacing:-.02em}
+.work-hero p{margin-top:20px;max-width:480px;color:var(--text-muted);font-size:1rem;line-height:1.6}
+
+.gallery-section{padding:0}
+.work-row{position:relative;display:flex;align-items:center;min-height:100vh;padding:8vh 6vw;gap:6vw;overflow:hidden}
+.work-row:nth-child(even){flex-direction:row-reverse}
+.work-row-num{position:absolute;top:6vh;left:6vw;font-family:var(--font-serif);font-style:italic;font-size:clamp(4rem,14vw,11rem);color:rgba(245,240,235,.05);line-height:1;z-index:0;pointer-events:none;user-select:none}
+.work-row:nth-child(even) .work-row-num{left:auto;right:6vw}
+.work-media{position:relative;flex:0 0 62%;aspect-ratio:4/3;border-radius:10px;overflow:hidden;z-index:1;opacity:0;transform:translateY(60px) scale(.96);transition:opacity 1s cubic-bezier(.19,1,.22,1),transform 1s cubic-bezier(.19,1,.22,1)}
+.work-media.visible{opacity:1;transform:translateY(0) scale(1)}
+.work-media img{position:absolute;top:-10%;left:0;width:100%;height:120%;object-fit:cover;will-change:transform}
+.work-media.img-missing{background:linear-gradient(135deg,#1a1a1a,#252017)}
+.work-media.img-missing img{display:none}
+.work-media-label{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:20px;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.06em;color:rgba(201,168,76,.4);text-transform:uppercase}
+.work-media.img-missing .work-media-label{display:flex}
+.work-info{position:relative;z-index:2;flex:1;max-width:340px}
+.work-info-idx{font-family:var(--font-mono);font-size:.7rem;color:var(--gold);letter-spacing:.15em;margin-bottom:14px}
+.work-info h3{font-family:var(--font-serif);font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.1;margin-bottom:14px}
+.work-info p{color:var(--text-muted);font-size:.92rem;line-height:1.6}
+.view-tag{position:fixed;top:0;left:0;width:88px;height:88px;border-radius:50%;background:var(--gold);color:#0F0F0F;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;pointer-events:none;z-index:500;opacity:0;transform:translate(-50%,-50%) scale(.4);transition:opacity .3s ease,transform .3s cubic-bezier(.34,1.56,.64,1);mix-blend-mode:normal}
+.view-tag.active{opacity:1;transform:translate(-50%,-50%) scale(1)}
+@media(max-width:900px){
+  .work-row{flex-direction:column !important;min-height:auto;padding:8vh 6vw;gap:24px}
+  .work-media{flex:none;width:100%;aspect-ratio:4/5}
+  .work-info{max-width:none}
+  .work-row-num{font-size:5rem;top:2vh}
+  .view-tag{display:none}
+}
+
+.lightbox{position:fixed;inset:0;background:rgba(10,10,10,.96);z-index:1000;display:none;align-items:center;justify-content:center;padding:5vw}
+.lightbox.active{display:flex;animation:lightboxFade .3s ease}
+@keyframes lightboxFade{from{opacity:0}to{opacity:1}}
+.lightbox-img-wrap{max-width:900px;max-height:85vh;animation:lightboxZoom .4s cubic-bezier(.19,1,.22,1)}
+@keyframes lightboxZoom{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+.lightbox-img-wrap img{max-width:100%;max-height:85vh;border-radius:6px;display:block}
+.lightbox-caption{text-align:center;margin-top:16px;color:var(--text-muted);font-size:.9rem}
+.lightbox-close,.lightbox-prev,.lightbox-next{position:fixed;background:rgba(255,255,255,.08);border:1px solid var(--border);color:var(--text);width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:all .3s ease}
+.lightbox-close:hover,.lightbox-prev:hover,.lightbox-next:hover{background:var(--gold);color:#0F0F0F;border-color:var(--gold)}
+.lightbox-close{top:24px;right:24px}
+.lightbox-prev{left:24px;top:50%;transform:translateY(-50%)}
+.lightbox-next{right:24px;top:50%;transform:translateY(-50%)}
+
+footer{padding:60px 6vw;border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+footer a{color:var(--gold);text-decoration:none}
+
+@media(max-width:900px){.gallery-item.size-sm,.gallery-item.size-md,.gallery-item.size-lg{grid-column:span 3}}
+@media(max-width:600px){.gallery-grid{grid-template-columns:repeat(2,1fr)}.gallery-item.size-sm,.gallery-item.size-md,.gallery-item.size-lg{grid-column:span 2}.lightbox-prev,.lightbox-next{width:38px;height:38px}}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="logo">Maahir <span>Studio</span></a>
+  <a href="index.html" class="back-link">← Back to site</a>
+</nav>
+
+<section class="work-hero">
+  <h1>Selected<br>work.</h1>
+  <p>A collection of graphic design, motion, and video projects — organized by client. Click any piece for a closer look.</p>
+</section>
+
+<section class="gallery-section">
+  <div id="galleryGrid"></div>
+</section>
+
+<footer>
+  © 2026 Maahir Studio. Get in touch: <a href="mailto:maahirstudios@gmail.com">maahirstudios@gmail.com</a>
+</footer>
+
+<script>
+// Generic placeholders for now — real project photos pending team review.
+// Just rename these files to match once photos are ready (or tell Claude
+// the real project names and it'll relabel everything to match).
+const photos = [
+  ["photo-01.jpg", "Project One", "Details coming soon"],
+  ["photo-02.jpg", "Project Two", "Details coming soon"],
+  ["photo-03.jpg", "Project Three", "Details coming soon"],
+  ["photo-04.jpg", "Project Four", "Details coming soon"],
+  ["photo-05.jpg", "Project Five", "Details coming soon"],
+  ["photo-06.jpg", "Project Six", "Details coming soon"],
+];
+
+const grid = document.getElementById('galleryGrid');
+photos.forEach(([fname, title, desc], i) => {
+  const row = document.createElement('div');
+  row.className = 'work-row';
+  row.innerHTML = `
+    <div class="work-row-num">${String(i + 1).padStart(2, '0')}</div>
+    <div class="work-media">
+      <img src="${fname}" alt="${title}" loading="lazy" decoding="async" onerror="this.parentElement.classList.add('img-missing')">
+      <div class="work-media-label">${fname}</div>
+    </div>
+    <div class="work-info">
+      <div class="work-info-idx">${String(i + 1).padStart(2, '0')} / ${String(photos.length).padStart(2, '0')}</div>
+      <h3>${title}</h3>
+      <p>${desc}</p>
+    </div>`;
+  grid.appendChild(row);
+});
+
+// Reveal each row's media as it scrolls into view
+const mediaEls = Array.from(document.querySelectorAll('.work-media'));
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+mediaEls.forEach(el => revealObserver.observe(el));
+
+// Lightweight scroll parallax — each image drifts inside its frame at a
+// different speed than the page scroll, all driven by a single rAF loop.
+let ticking = false;
+function updateParallax() {
+  const vh = window.innerHeight;
+  mediaEls.forEach(media => {
+    const r = media.getBoundingClientRect();
+    const centerOffset = (r.top + r.height / 2) - vh / 2;
+    const shift = centerOffset * -0.08;
+    const img = media.querySelector('img');
+    if (img) img.style.transform = `translateY(${shift.toFixed(1)}px)`;
+  });
+  ticking = false;
+}
+window.addEventListener('scroll', () => {
+  if (!ticking) { ticking = true; requestAnimationFrame(updateParallax); }
+}, { passive: true });
+updateParallax();
+
+// Custom "View" cursor tag that follows the mouse over each work-media block
+const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+if (!isTouchDevice) {
+  const viewTag = document.createElement('div');
+  viewTag.className = 'view-tag';
+  viewTag.textContent = 'View';
+  document.body.appendChild(viewTag);
+  document.addEventListener('mousemove', e => {
+    viewTag.style.left = e.clientX + 'px';
+    viewTag.style.top = e.clientY + 'px';
+  });
+  mediaEls.forEach(media => {
+    media.addEventListener('mouseenter', () => viewTag.classList.add('active'));
+    media.addEventListener('mouseleave', () => viewTag.classList.remove('active'));
+  });
+}
+</script>
+</body>
+</html>
