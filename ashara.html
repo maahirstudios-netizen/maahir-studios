@@ -11,7 +11,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
 /* ===== RESET & ROOT ===== */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -172,6 +171,8 @@ body{
   letter-spacing:3px;
   text-transform:uppercase;
   color:var(--text-secondary);
+  background:linear-gradient(180deg,rgba(255,255,255,0.5),rgba(255,255,255,0.15));
+  box-shadow:0 8px 30px rgba(184,146,61,0.12);
   opacity:0;
 }
 .cover-badge .badge-line{
@@ -243,6 +244,14 @@ body{
   object-fit:contain;
   filter:drop-shadow(0 20px 60px rgba(201,168,76,0.4));
 }
+.treasure-ring{
+  position:absolute;border-radius:50%;
+  border:1px solid var(--border-gold);
+  pointer-events:none;
+}
+.treasure-ring.r1{inset:-24px;animation:ring-spin-slow 26s linear infinite}
+.treasure-ring.r2{inset:-46px;border-style:dashed;opacity:0.5;animation:ring-spin-slow 40s linear infinite reverse}
+@keyframes ring-spin-slow{to{transform:rotate(360deg)}}
 .treasure-label{
   position:absolute;
   bottom:-50px;left:50%;
@@ -297,6 +306,17 @@ body{
 @keyframes scroll-pulse{
   0%,100%{opacity:0.3;height:40px}
   50%{opacity:1;height:50px}
+}
+.scroll-indicator .scroll-chevron{
+  width:10px;height:10px;
+  border-right:1px solid var(--gold-dark);
+  border-bottom:1px solid var(--gold-dark);
+  transform:rotate(45deg);
+  animation:chevron-bounce 2s ease-in-out infinite;
+}
+@keyframes chevron-bounce{
+  0%,100%{transform:rotate(45deg) translate(0,0);opacity:0.5}
+  50%{transform:rotate(45deg) translate(4px,4px);opacity:1}
 }
 
 /* ===== MEANING REVEAL CARDS ===== */
@@ -615,49 +635,250 @@ body{
   line-height:1.7;
 }
 
-#three-canvas{
-  width:100%;
-  height:80vh;
-  min-height:600px;
+/* ===== COSMOS WRAP (orbiting solar system) ===== */
+.cosmos-wrap{
   position:relative;
   z-index:1;
-  cursor:grab;
-  border-radius:var(--radius);
-  overflow:hidden;
 }
-#three-canvas:active{cursor:grabbing}
 
-/* Planet info tooltip */
-.planet-tooltip{
-  position:fixed;
-  z-index:100;
-  pointer-events:none;
-  opacity:0;
-  transition:opacity 0.3s ease;
-  transform:translate(-50%,-120%);
+/* --- Orbit stage: sun sits dead-centre, planets revolve around it --- */
+.orbit-stage{
+  position:relative;
+  width:min(100%,1180px);
+  aspect-ratio:1/1;
+  margin:0 auto;
+  --orbit-r: clamp(150px,25vw,400px);
 }
-.planet-tooltip.visible{opacity:1}
-.planet-tooltip-inner{
+.orbit-stage-hint{
+  text-align:center;
+  font-size:0.896rem;
+  letter-spacing:2px;
+  color:var(--text-muted);
+  margin:0 0 18px;
+  text-transform:uppercase;
+  opacity:0.8;
+}
+
+/* --- Central kalam node ("the sun") --- */
+.kalam-node-zone{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;
+  z-index:6;
+}
+.kalam-node{
+  position:relative;
+  width:clamp(96px,10vw,132px);height:clamp(96px,10vw,132px);
+  border-radius:50%;
+  border:none;cursor:pointer;
+  background:radial-gradient(circle at 32% 28%,#fff6d8 0%,var(--gold-light) 30%,var(--gold-dark) 78%,#5c4816 100%);
+  box-shadow:0 0 0 1px rgba(255,255,255,0.4) inset,
+             0 0 60px var(--gold-glow),
+             0 20px 50px rgba(139,105,20,0.35),
+             inset -14px -14px 30px rgba(0,0,0,0.35),
+             inset 10px 10px 24px rgba(255,255,255,0.35);
+  display:flex;align-items:center;justify-content:center;
+  animation:sun-pulse 4s ease-in-out infinite;
+  transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+  flex-shrink:0;
+}
+.kalam-node:hover,.kalam-node:focus-visible,.kalam-node.active{transform:scale(1.06)}
+@keyframes sun-pulse{
+  0%,100%{box-shadow:0 0 0 1px rgba(255,255,255,0.4) inset,0 0 60px var(--gold-glow),0 20px 50px rgba(139,105,20,0.35),inset -14px -14px 30px rgba(0,0,0,0.35),inset 10px 10px 24px rgba(255,255,255,0.35)}
+  50%{box-shadow:0 0 0 1px rgba(255,255,255,0.5) inset,0 0 90px var(--gold-glow),0 20px 60px rgba(139,105,20,0.45),inset -14px -14px 30px rgba(0,0,0,0.35),inset 10px 10px 24px rgba(255,255,255,0.4)}
+}
+.kalam-node-ring{
+  position:absolute;inset:-14px;border-radius:50%;
+  border:1px solid var(--border-gold);
+  animation:ring-spin 14s linear infinite;
+}
+.kalam-node-ring.r2{inset:-28px;border-color:rgba(184,146,61,0.15);animation-duration:22s;animation-direction:reverse}
+@keyframes ring-spin{to{transform:rotate(360deg)}}
+.kalam-node-core{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  color:#3a2a05;
+}
+.kalam-node-glyph{font-family:var(--font-display);font-size:1.6rem;line-height:1}
+.kalam-node-sub{font-size:0.64rem;letter-spacing:2px;font-weight:700;opacity:0.7}
+.kalam-node-hint{
+  margin-top:14px;font-size:0.832rem;color:var(--text-muted);
+  letter-spacing:1px;
+}
+
+.kalam-node-card{
+  position:absolute;top:calc(100% + 22px);left:50%;
+  transform:translate(-50%,-10px);
+  width:min(420px,86vw);
   background:var(--bg-card);
   border:1px solid var(--border-gold);
-  border-radius:12px;
-  padding:16px 24px;
+  border-radius:var(--radius);
+  padding:28px 30px;
   text-align:center;
-  backdrop-filter:blur(20px);
-  box-shadow:0 10px 40px rgba(0,0,0,0.5);
-  white-space:nowrap;
+  backdrop-filter:blur(20px) saturate(160%);
+  box-shadow:0 30px 70px rgba(80,60,20,0.22),0 0 50px var(--gold-glow);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity 0.35s ease,transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94),visibility 0.35s;
+  z-index:50;
 }
-.planet-tooltip .tooltip-majlis{
-  font-size:0.832rem;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  color:var(--gold);
-  margin-bottom:4px;
+.kalam-node-card.open{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0)}
+.kalam-card-tag{font-size:0.832rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.kalam-card-arabic{font-family:var(--font-arabic);font-size:1.92rem;color:var(--text-primary);direction:rtl;margin-bottom:10px}
+.kalam-card-eng{font-family:var(--font-display);font-style:italic;font-size:1.152rem;color:var(--text-secondary);margin-bottom:16px}
+.kalam-card-meaning{font-size:1.024rem;line-height:1.7;color:var(--text-secondary);padding-top:16px;border-top:1px solid var(--border-gold)}
+.kalam-card-meaning strong{color:var(--gold-dark);letter-spacing:1px}
+
+/* --- Orbit ring guide (faint dashed circle traced by the planets) --- */
+.orbit-guide-ring{
+  position:absolute;top:50%;left:50%;
+  width:calc(var(--orbit-r) * 2);height:calc(var(--orbit-r) * 2);
+  margin-left:calc(var(--orbit-r) * -1);margin-top:calc(var(--orbit-r) * -1);
+  border:1px dashed var(--border-gold);
+  border-radius:50%;
+  opacity:0.35;
+  pointer-events:none;
+  z-index:0;
 }
-.planet-tooltip .tooltip-title{
+
+/* --- Orbit arm: rotates continuously about the stage centre --- */
+.orbit-arm{
+  position:absolute;top:50%;left:50%;
+  width:0;height:0;
+  animation:orbit-spin var(--dur,90s) linear infinite;
+  animation-delay:var(--delay,0s);
+}
+@keyframes orbit-spin{
+  from{transform:rotate(var(--start-angle))}
+  to{transform:rotate(calc(var(--start-angle) + 360deg))}
+}
+/* --- Orbit slot: fixed offset outward along the arm = the orbit radius --- */
+.orbit-slot{
+  position:absolute;top:0;left:0;
+  transform:translateX(var(--orbit-r));
+}
+/* --- Counter-rotation: cancels the arm's spin so labels stay upright --- */
+.orbit-counter{
+  position:absolute;top:0;left:0;
+  animation:orbit-counter-spin var(--dur,90s) linear infinite;
+  animation-delay:var(--delay,0s);
+}
+@keyframes orbit-counter-spin{
+  from{transform:translate(-50%,-50%) rotate(calc(-1 * var(--start-angle)))}
+  to{transform:translate(-50%,-50%) rotate(calc(-1 * var(--start-angle) - 360deg))}
+}
+/* Pausing: hovering the stage (or having a modal open) freezes every orbit
+   in place so the traveller can read labels without them drifting off. */
+.orbit-stage.paused .orbit-arm,
+.orbit-stage.paused .orbit-counter{animation-play-state:paused}
+
+.planet-stop{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;align-items:center;
+  width:clamp(150px,15vw,230px);
+  cursor:pointer;
+}
+.planet-label{
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  margin-bottom:16px;
+  text-align:center;
+}
+.planet-eyebrow{
+  font-size:0.768rem;letter-spacing:3px;text-transform:uppercase;
+  color:var(--planet-c,var(--gold));
+  font-weight:700;
+}
+.planet-icon-badge{
+  width:52px;height:52px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  border:1.5px solid var(--planet-c,var(--border-gold));
+  background:var(--bg-card);
+  color:var(--planet-c,var(--gold-dark));
+  box-shadow:0 6px 20px rgba(0,0,0,0.06);
+  transition:transform 0.4s ease;
+}
+.planet-icon-badge svg{width:24px;height:24px}
+.planet-stop:hover .planet-icon-badge,.planet-stop.active .planet-icon-badge{transform:scale(1.12) translateY(-2px)}
+.planet-title{
   font-family:var(--font-display);
-  font-size:1.28rem;
+  font-size:clamp(1.05rem,1.5vw,1.408rem);
+  font-weight:600;
   color:var(--text-primary);
+  line-height:1.3;
+  max-width:230px;
+}
+.planet-orb-wrap{
+  position:relative;
+  width:clamp(150px,16vw,240px);height:clamp(150px,16vw,240px);
+  display:flex;align-items:center;justify-content:center;
+}
+.planet-orbit-ring{
+  position:absolute;inset:-16px;
+  border-radius:50%;
+  border:1px dashed var(--planet-c,var(--gold));
+  opacity:0.25;
+  animation:ring-spin 30s linear infinite;
+}
+.planet-orb{
+  position:relative;
+  width:100%;height:100%;
+  border-radius:50%;
+  border:none;cursor:pointer;
+  background:
+    radial-gradient(circle at 30% 25%,rgba(255,255,255,0.55) 0%,transparent 35%),
+    radial-gradient(circle at 34% 30%,color-mix(in srgb,var(--planet-c) 55%,white) 0%,var(--planet-c) 45%,color-mix(in srgb,var(--planet-c) 60%,black) 100%);
+  box-shadow:
+    0 0 50px color-mix(in srgb,var(--planet-c) 45%,transparent),
+    0 25px 60px rgba(20,15,5,0.18),
+    inset -18px -18px 40px rgba(0,0,0,0.32),
+    inset 12px 12px 30px rgba(255,255,255,0.3);
+  transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94),box-shadow 0.45s ease;
+  display:flex;align-items:center;justify-content:center;
+}
+.planet-stop:hover .planet-orb,.planet-stop:focus-within .planet-orb{
+  transform:scale(1.08);
+  box-shadow:
+    0 0 80px color-mix(in srgb,var(--planet-c) 60%,transparent),
+    0 30px 70px rgba(20,15,5,0.22),
+    inset -18px -18px 40px rgba(0,0,0,0.28),
+    inset 12px 12px 30px rgba(255,255,255,0.35);
+}
+.planet-stop.active .planet-orb{
+  transform:scale(1.1);
+  box-shadow:
+    0 0 0 4px var(--bg-deep),0 0 0 6px var(--planet-c),
+    0 0 90px color-mix(in srgb,var(--planet-c) 65%,transparent),
+    inset -18px -18px 40px rgba(0,0,0,0.28),
+    inset 12px 12px 30px rgba(255,255,255,0.35);
+}
+.planet-number{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:clamp(2.4rem,5vw,4.2rem);
+  color:rgba(255,255,255,0.95);
+  text-shadow:0 4px 18px rgba(0,0,0,0.35);
+  user-select:none;
+}
+.planet-reading-badge{
+  margin-top:14px;
+  font-size:0.78rem;letter-spacing:1.5px;
+  color:var(--planet-c,var(--gold-dark));
+  opacity:0;transform:translateY(-4px);
+  transition:all 0.3s ease;
+  text-transform:uppercase;
+  font-weight:700;
+}
+.planet-stop:hover .planet-reading-badge,.planet-stop.active .planet-reading-badge{opacity:1;transform:translateY(0)}
+
+@media(max-width:900px){
+  .orbit-stage{--orbit-r: clamp(105px,32vw,170px)}
+  .planet-orb-wrap{width:clamp(96px,20vw,140px);height:clamp(96px,20vw,140px)}
+  .planet-stop{width:clamp(110px,26vw,160px)}
+  .planet-title{font-size:0.86rem;max-width:140px}
+  .planet-icon-badge{width:38px;height:38px}
+  .planet-icon-badge svg{width:18px;height:18px}
+  .planet-number{font-size:clamp(1.4rem,6vw,2rem)}
+  .kalam-node-card{padding:22px 20px}
 }
 
 /* Majlis Modal */
@@ -802,6 +1023,7 @@ body{
   opacity:0.12;
   pointer-events:none;
   z-index:0;
+  animation:ambient-drift 18s ease-in-out infinite;
 }
 .ambient-orb.gold{
   width:400px;height:400px;
@@ -810,6 +1032,34 @@ body{
 .ambient-orb.emerald{
   width:300px;height:300px;
   background:var(--emerald);
+  animation-duration:22s;
+  animation-direction:reverse;
+}
+@keyframes ambient-drift{
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(40px,-30px) scale(1.12)}
+}
+
+/* ===== SECTION 1 — decorative geometric rosette behind the kalam ===== */
+.cover-rosette{
+  position:absolute;
+  top:50%;left:50%;
+  width:min(900px,90vw);height:min(900px,90vw);
+  transform:translate(-50%,-50%);
+  z-index:0;
+  opacity:0.5;
+  pointer-events:none;
+}
+.cover-rosette svg{
+  width:100%;height:100%;
+  animation:rosette-spin 140s linear infinite;
+}
+.cover-rosette .ring-outer{animation:rosette-spin 140s linear infinite}
+.cover-rosette .ring-inner{animation:rosette-spin 90s linear infinite reverse}
+@keyframes rosette-spin{to{transform:rotate(360deg)}}
+.cover-vignette{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(circle at 50% 45%,transparent 30%,var(--bg-deep) 92%);
 }
 </style>
 </head>
@@ -848,7 +1098,25 @@ body{
   <div class="cover-pin" id="coverPin">
     <!-- Particles -->
     <div class="cover-particles" id="coverParticles"></div>
-    
+
+    <!-- Decorative rotating geometric rosette -->
+    <div class="cover-rosette" aria-hidden="true">
+      <svg viewBox="0 0 400 400" fill="none">
+        <g class="ring-outer" stroke="var(--gold)" stroke-width="0.6" opacity="0.5">
+          <circle cx="200" cy="200" r="188"/>
+          <polygon points="200,12 260,80 340,90 300,160 340,230 260,240 200,308 140,240 60,230 100,160 60,90 140,80"/>
+        </g>
+        <g class="ring-inner" stroke="var(--gold)" stroke-width="0.6" opacity="0.45">
+          <circle cx="200" cy="200" r="128"/>
+          <polygon points="200,72 233,133 200,194 167,133"/>
+          <polygon points="200,328 233,267 200,206 167,267"/>
+          <polygon points="72,200 133,167 194,200 133,233"/>
+          <polygon points="328,200 267,167 206,200 267,233"/>
+        </g>
+      </svg>
+    </div>
+    <div class="cover-vignette"></div>
+
     <div class="cover-content">
       <div class="cover-badge" id="coverBadge">
         <span class="badge-line"></span>
@@ -883,6 +1151,8 @@ body{
       <!-- Treasure chest (hidden, animates in) -->
       <div class="treasure-container" id="treasureChest">
         <div class="treasure-glow"></div>
+        <span class="treasure-ring r1"></span>
+        <span class="treasure-ring r2"></span>
         <img src="treasure_chest.jpg" alt="Golden treasure chest with Islamic geometric patterns" class="treasure-image">
         <div class="treasure-label" id="treasureLabel">T R E A S U R E</div>
       </div>
@@ -891,6 +1161,7 @@ body{
     <div class="scroll-indicator" id="scrollIndicator">
       <span class="scroll-text">Scroll to explore</span>
       <div class="scroll-line"></div>
+      <div class="scroll-chevron"></div>
     </div>
   </div>
 </section>
@@ -930,7 +1201,7 @@ body{
         <div class="tazyeen-name" style="display:none">مُحَمَّد ﷺ</div>
         <div class="tazyeen-subtitle">The Adornment — Tazyeen Mubaraka</div>
         <div class="tazyeen-cta">
-          <span>Hover to read Majlis 5 →</span>
+          <span>Hover to read Majlis 3 →</span>
         </div>
       </div>
     </div>
@@ -943,28 +1214,27 @@ body{
     </div>
     
     <p style="font-size:1.088rem;color:var(--text-muted);max-width:500px;margin:0 auto;text-align:center;line-height:1.7">
-      The Tazyeen Mubaraka — a symbol of divine artistry — connects to the discourse of Majlis 5 which explores the craft of architecture and construction. Click above to read the full reflection.
+      The Tazyeen Mubaraka — a symbol of divine artistry — connects to the discourse of Majlis 3 which explores the craft of architecture and engineering. Hover above to read the full reflection.
     </p>
   </div>
 </section>
 
-<!-- Majlis 5 Slide Panel -->
+<!-- Majlis 3 Slide Panel (Architecture — echoed here beside the Tazyeen) -->
 <div class="majlis5-overlay" id="majlis5Overlay" onclick="closeMajlis5()"></div>
 <div class="majlis5-panel" id="majlis5Panel" onmouseenter="openMajlis5()" onmouseleave="closeMajlis5()">
   <button class="panel-close" onclick="closeMajlis5()">✕</button>
-  <div class="panel-tag">Majlis 5 / 1448H</div>
-  <h2 class="panel-title">Architecture & Construction</h2>
-  <div class="panel-date">6th al-Muharram al-Haraam</div>
+  <div class="panel-tag">Majlis 3 / 1448H</div>
+  <h2 class="panel-title">Architecture & Engineering</h2>
+  <div class="panel-date">4th al-Muharram al-Haraam</div>
   <div class="panel-body">
-    <p>In this fifth waʿz mubarak, Syedna al-Dai al-Ajal TUS expounded upon the craft of architecture and construction — drawing parallels between the physical structures that shelter mankind and the spiritual edifices that protect the soul.</p>
-    <div class="arabic-quote">صُنْعَ اللَّهِ الَّذِي أَتْقَنَ كُلَّ شَيْءٍ</div>
-    <p><em>"The doing of Allah who perfected all things."</em></p>
-    <p>The Tazyeen Mubaraka, with its exquisite geometric precision and layered symbolism, stands as a living embodiment of this verse. Each line, each curve, each interlocking form within the tazyeen reflects the divine philosophy of itqaan — perfection in creation.</p>
-    <p>Architecture, Syedna TUS elaborated, is not merely about constructing physical shelters but about building communities, fostering connections, and creating spaces where faith and learning can flourish. The greatest architecture is the architecture of the soul — constructed through knowledge, refined through worship, and adorned through the remembrance of Imam Husain AS.</p>
-    <p>The Duat Mutlaqeen have always been master builders — not just of physical structures like the magnificent masajid and madrasas that dot the landscape of Dawat — but of human character and spiritual resolve.</p>
+    <p>Dedicated to Nabi Ibrahim AS, builder of the Kaʿba, this majlis used the seven defining features of a masjid — as described by Syedna Jaʿfar bin Mansoor al-Yemen RA: land, four walls, roof, and air — as a framework for architecture, life-planning, and child-rearing.</p>
+    <p><strong>Zameen (site selection):</strong> the choice of sacred sites — Bayt Allah, al-Mahdiyya, al-Mansuriyya, Darse Saifee, Raudat Tahera — as a model for choosing environments for prayer, rest, and a child's upbringing.</p>
+    <p><strong>The walls:</strong> foundation through taqwa and tawakkul (Ibrahim's AS placement of the Hajar-e-Aswad), encompassment and utility (homes as "palaces," balancing deen and dunya), height and ambition (the Kaʿba's humble form versus its towering spiritual pull), and groundedness — balancing lofty aspiration with feasibility, illustrated by the flaws of Fallingwater house and the wisdom of Rasul Allah's SAW amnesty terms at the conquest of Makkah.</p>
+    <p><strong>Roof and ventilation:</strong> lofty intention (niyyat), illustrated by Syedi Abdulqadir Hakimuddin's QR rejection of worldly reward for spiritual duty, and flexibility — always having a "plan B" in raising children.</p>
+    <p>The majlis closed with Imam Husain's AS unshakeable tawakkul in Karbala and his final, moving exchange with Maulatona Zainab AS.</p>
   </div>
   <div class="panel-source">
-    Source: <a href="https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-5-1448h/" target="_blank">Blogs Aljamea-tus-Saifiyah</a>
+    Source: <a href="https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-3-1448h/" target="_blank">Blogs Aljamea-tus-Saifiyah</a>
   </div>
 </div>
 
@@ -988,21 +1258,39 @@ body{
   <div class="orbits-header">
     <div class="section-label">Section III — The Constellations of Knowledge</div>
     <h2>Ten Majalis — Ten Worlds of Wisdom</h2>
-    <p>Each majlis represents a unique realm of knowledge. Explore the cosmic arrangement of Ashara Mubaraka's ten discourses — hover and click to reveal each reflection.</p>
+    <p>Each majlis represents a unique realm of knowledge — ten worlds, in order, revolving around one kalam. Hover any world to open its reflection.</p>
   </div>
   
-  <div id="three-canvas"></div>
+  <div class="cosmos-wrap">
+    <div class="orbit-stage-hint">Hover any world to read · hovering pauses the orbit</div>
+
+    <div class="orbit-stage" id="orbitStage">
+      <div class="orbit-guide-ring"></div>
+
+      <div class="kalam-node-zone">
+        <button class="kalam-node" id="kalamNode" aria-label="Reveal the meaning of the Kalam Mubarak">
+          <span class="kalam-node-ring r1"></span>
+          <span class="kalam-node-ring r2"></span>
+          <span class="kalam-node-core">
+            <span class="kalam-node-glyph">✦</span>
+            <span class="kalam-node-sub">1448H</span>
+          </span>
+        </button>
+        <div class="kalam-node-hint">Hover the sun to see the kalam it carries</div>
+        <div class="kalam-node-card" id="kalamCard">
+          <div class="kalam-card-tag">The Kalam Mubarak</div>
+          <div class="kalam-card-arabic">حِرْفَةُ الْمَرْءِ كَنْزُهُ</div>
+          <div class="kalam-card-eng">"A man's talent and skills are his treasure"</div>
+          <div class="kalam-card-meaning"><strong>كَنْزُهُ → TREASURE</strong> — the skill one cultivates is not merely a means of livelihood, but an enduring treasure that enriches the self and benefits all. Every world orbiting below carries one facet of this one idea.</div>
+        </div>
+      </div>
+
+      <div id="orbitTrack"></div>
+    </div>
+  </div>
 </section>
 
-<!-- Planet tooltip -->
-<div class="planet-tooltip" id="planetTooltip">
-  <div class="planet-tooltip-inner">
-    <div class="tooltip-majlis" id="tooltipMajlis"></div>
-    <div class="tooltip-title" id="tooltipTitle"></div>
-  </div>
-</div>
-
-<!-- Majlis Modal (for planet clicks) -->
+<!-- Majlis Modal (pinned reading panel — stays open so you can scroll) -->
 <div class="majlis-modal-overlay" id="majlisModalOverlay">
   <div class="majlis-modal" id="majlisModal">
     <button class="modal-close" id="modalClose">✕</button>
@@ -1037,92 +1325,102 @@ body{
 const majlisData = [
   {
     num: 1,
-    title: "Clothing & Cuisine",
+    title: "Clothing & Food",
     date: "2nd al-Muharram al-Haraam",
-    theme: "The parallels between the tailor and the chef — six shared virtues of measurement, seasonality, ornamentation, punctuality, precision, and restoration.",
-    body: `<p>The opening address reminded attendees of the true essence of Ashara Mubaraka: heartfelt zikr and buka upon Maulana al-Imam al-Husain AS.</p><p>Syedna al-Dai al-Ajal TUS announced this year's theme: a range of trades, crafts, and skills. The first waʿz explored clothing and food as the principal framework.</p><div class="arabic-inline">حِرْفَةُ الْمَرْءِ كَنْزُهُ</div><p><em>"A man's talent and skills are his treasure"</em></p><p>Six points of similitude between tailoring and cuisine were explored: estimation and measurement, suitability to season, simplicity vs ornamentation, punctuality, the use of cutting instruments to remove excess, and the joy that skilled work brings. Each was connected to interpersonal relationships and the actions of Imam Husain AS in Karbala.</p>`,
+    theme: "Six shared virtues of the tailor and the cook — estimation, timing, simplicity, punctuality, removing excess, and skilful repair.",
+    body: `<p>Syedna Mufaddal Saifuddin TUS opened Ashara Mubaraka 1448H (held in London) by reminding Mumineen that its essence is heartfelt zikr and buka for Imam Husain AS — noting this as his 13th Ashara Mubaraka, and the 52nd year since Syedna Mohammed Burhanuddin's RA first visit to London. He announced this year's theme: trades, crafts, and skills, with each waʿz correlated to a different profession.</p><p>The first majlis focused on <strong>clothing (al-libaas)</strong> and <strong>food (al-taʿaam)</strong> — each word having six letters in Arabic, mapped to six virtues shared by tailors and cooks: estimation and measurement, suitability to season, simplicity versus ornamentation for the occasion, punctuality, removing excess and waste, and skilful repair.</p><p>These six qualities were mapped onto Imam Husain's AS conduct in Karbala — his discernment of sincere companions, his care for the fallen, the wedding of Maulana Abdullah AS and Maulatuna Sakina AS amid tragedy, his presence at Ali Akbar's AS final moments, his restraint against enemies, and his restorative sacrifice. The majlis closed with the shahadat of Imam Husain AS and his final farewell in Madina.</p>`,
     color: '#c9a84c',
+    icon: 'scissors',
     link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-1-6/"
   },
   {
     num: 2,
-    title: "Commerce & Trade",
+    title: "Information Technology",
     date: "3rd al-Muharram al-Haraam",
-    theme: "The ethics of trade and commerce as reflected in the teachings of Aimmat Tahereen AS.",
-    body: `<p>The second majlis explored the world of commerce and trade — the principles of honest dealing, fair measure, and ethical business practices as taught by the Aimmat Tahereen AS.</p><p>Syedna TUS drew connections between the merchant's craft and the spiritual marketplace where good deeds are the currency and divine pleasure is the ultimate profit.</p>`,
-    color: '#e8d48b',
+    theme: "The five letters of safeena (ark) — solution-providing, discernment, ease, speed, and lifelong learning — applied to IT and AI.",
+    body: `<p>Syedna TUS opened with the Ahle Bayt AS as the "Ark of Salvation" (Safinat al-Najaat), tying the day's dedication to Nabi Nuh AS. He recalled the 1238H Surat flood during Syedna Tayyib Zainuddin's RA time, and how the Duat Mutlaqeen have always guided Mumineen through crises.</p><div class="arabic-inline">سفينه</div><p>The waʿz used the five Arabic letters of <em>safeena</em> to structure a discussion on IT and AI: <strong>seen</strong> (solution-providing), <strong>faa</strong> (discernment — distinguishing truth from falsehood amid information overload), <strong>yaa</strong> (ease and accessibility), <strong>noon</strong> (speed, illustrated by the Wali of Hind and the saqqa narration behind Huffaz-e-Quran), and <strong>haa</strong> (lifelong, repeated pursuit of learning).</p><p>These were connected to Imam Husain AS and Maulana Abbas's AS conduct in Karbala. Syedna TUS also cautioned children against mobile phone use before age 15 and warned against unverified religious information online.</p>`,
+    color: '#4ecdc4',
+    icon: 'chip',
     link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-2-6/"
   },
   {
     num: 3,
-    title: "Medicine & Healing",
+    title: "Architecture & Engineering",
     date: "4th al-Muharram al-Haraam",
-    theme: "The healer's art — physical and spiritual remedies drawn from prophetic tradition.",
-    body: `<p>The third waʿz mubarak was devoted to the noble craft of medicine and healing. Syedna al-Dai al-Ajal TUS expounded upon the parallels between physical healing and spiritual restoration.</p><p>Just as a physician diagnoses ailments and prescribes remedies, the Dai al-Mutlaq diagnoses spiritual maladies and provides the cure through knowledge and guidance.</p>`,
-    color: '#2dd693',
+    theme: "The seven defining features of a masjid — site, walls, roof, and air — as a framework for building, life-planning, and child-rearing.",
+    body: `<p>Dedicated to Nabi Ibrahim AS, builder of the Kaʿba, this majlis used the seven features of a masjid described by Syedna Jaʿfar bin Mansoor al-Yemen RA: site selection, the foundation of taqwa and tawakkul, encompassment and utility, height and ambition, groundedness and practicality — illustrated by the flaws of Fallingwater house and the wisdom of Rasul Allah's SAW amnesty terms at the conquest of Makkah — lofty intention (niyyat), and ventilation as flexibility, always having a "plan B."</p><p>The majlis closed with Imam Husain's AS unshakeable tawakkul in Karbala and the moving exchange between Imam Husain AS and Maulatona Zainab AS comparing his suffering to that of past Prophets, followed by his final farewell.</p>`,
+    color: '#7bdcb5',
+    icon: 'arch',
     link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-3-1448h/"
   },
   {
     num: 4,
-    title: "Agriculture & Farming",
+    title: "Law & Medicine",
     date: "5th al-Muharram al-Haraam",
-    theme: "The farmer's patience — sowing seeds of knowledge, reaping harvests of wisdom.",
-    body: `<p>In the fourth majlis, Syedna TUS explored the ancient and noble craft of agriculture — the patience required to sow, nurture, and harvest.</p><p>The metaphor of farming was beautifully connected to the cultivation of the soul: just as seeds need water, sunlight, and care, the human spirit needs knowledge, devotion, and the remembrance of Imam Husain AS to flourish.</p>`,
-    color: '#7bdcb5',
+    theme: "Four qualities each from the names of Nabi Musa AS (lawyers) and Nabi ʿEesa AS (physicians).",
+    body: `<p>Dedicated to Nabi Musa AS and Nabi ʿEesa AS, this majlis drew four qualities from each of their four-letter Arabic names. From <strong>Musa</strong> — for lawyers and argument (hujjat): logic (mantiq), a support system of knowledge leading to gentleness (rifq), persuasive and transformative speech, and character as argument (akhlaaq). These were mapped onto Imam Husain's AS logical appeal to his enemies on the day of Ashura.</p><p>From <strong>ʿEesa</strong> — for doctors and medicine: humility and servanthood, alertness to new developments, striving (saʿye), and guarding secrets — illustrated by Syedna Taher Saifuddin's RA discretion.</p><p>The majlis closed with Imam Husain's AS heartrending farewell to his ailing son, Imam Ali Zainul Abedeen AS, before riding to battle.</p>`,
+    color: '#2dd693',
+    icon: 'scale',
     link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-4-1448h/"
   },
   {
     num: 5,
-    title: "Architecture & Construction",
+    title: "Archival Recordings",
     date: "6th al-Muharram al-Haraam",
-    theme: "Building structures of faith — the architect's precision reflected in spiritual edifices.",
-    body: `<p>The fifth waʿz mubarak explored architecture and construction. The Tazyeen Mubaraka — with its exquisite geometric precision — embodies the verse: "The doing of Allah who perfected all things."</p><div class="arabic-inline">صُنْعَ اللَّهِ الَّذِي أَتْقَنَ كُلَّ شَيْءٍ</div><p>Architecture is not merely about constructing physical shelters but about building communities, fostering connections, and creating spaces where faith and learning can flourish.</p>`,
-    color: '#c9a84c',
+    theme: "Screened recordings of Syedna Mohammed Burhanuddin RA (1412H) and an audio excerpt of Syedna Taher Saifuddin RA.",
+    body: `<p>This majlis featured screened recordings rather than a new waʿz. <strong>Syedna Burhanuddin RA (1412H)</strong> spoke on the unity of Mumineen and Muslimeen, the primacy of ikhlaas over merely uttering the kalima, and the unmatched stature of Rasul Allah SAW revealed on the night of meʿraj — narrating Amirul Mumineen's AS unique authority to adjudicate, the interdependence of Islam and Iman ("Islam is a tree, iman its fruit"), and his Solomon-like judgment between two women. He also retold the conquest of Makkah in detail and closed with the emotional retelling of Imam Ali Akbar's AS shahadat.</p><p><strong>Syedna Taher Saifuddin RA</strong> spoke on the recurring significance of the number four in the Shariat — the four rivers of jannat and the four qualities of din and dunya from Imam Ahmed al-Mastur's AS Rasaʾil Ikhwan al-Safaʾ — and on how duʿa, repentance, istighfar, and gratitude are each answered in kind.</p>`,
+    color: '#a78bfa',
+    icon: 'film',
     link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-5-1448h/"
   },
   {
     num: 6,
-    title: "Calligraphy & Writing",
+    title: "Teaching & Education",
     date: "7th al-Muharram al-Haraam",
-    theme: "The pen's sacred journey — from ink to illumination, the written word as divine craft.",
-    body: `<p>The sixth majlis was devoted to calligraphy and the art of writing — one of the most revered crafts in Islamic tradition. Syedna TUS spoke of the Quran's exaltation of the pen.</p><p>The calligrapher's discipline, patience, and pursuit of perfection mirror the spiritual journey of the faithful. Each stroke carries meaning, each letter holds beauty.</p>`,
+    theme: "Eight qualities of a good educator drawn from eight names of Maulatona Fatema AS.",
+    body: `<p>Dedicated to Maulatona Fatema AS as the ultimate teacher, this majlis drew eight qualities of a good educator from her names: meeting students at their level (<strong>Fatema</strong>), mastery and practicing what one teaches (<strong>al-Zahra</strong>), following established tradition without corruption (<strong>Batool</strong>), freedom from personal opinion and admitting error honestly (<strong>Maryam al-Kubra</strong>), commanding respect through conduct (<strong>Sayyidat al-Nisa</strong>), generosity in teaching (<strong>Badʿat</strong>), sincere effort without seeking credit (<strong>Qalb</strong>), and teaching with spirit and love (<strong>Rooh</strong>).</p><p>These eight qualities were mapped onto the Duat Mutlaqeen's AS approach to conveying the zikr of Imam Husain AS. The majlis closed with the moving account of Maulatona Fatema's AS passing and Amirul Mumineen's AS grief.</p>`,
     color: '#e8d48b',
+    icon: 'book',
     link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-6-1448h/"
   },
   {
     num: 7,
-    title: "Navigation & Seafaring",
+    title: "Business",
     date: "8th al-Muharram al-Haraam",
-    theme: "Charting the course — the navigator's faith in unseen shores.",
-    body: `<p>The seventh waʿz mubarak explored the craft of navigation and seafaring. The vastness of the ocean serves as a metaphor for the journey of life — uncertain, challenging, yet ultimately guided by divine light.</p><p>Syedna TUS spoke of the Dai as the navigator who steers the ship of Dawat through turbulent waters, guided by the celestial compass of the Imam's noor.</p>`,
-    color: '#4ecdc4',
+    theme: "Nine principles of business drawn from nine names and epithets of Amirul Mumineen AS.",
+    body: `<p>Using nine names of Amirul Mumineen AS, Syedna TUS outlined nine principles of business rooted in the Dawoodi Bohra community's trading heritage, traced to Maulana Salman al-Farisi RA: resolve and trust in Allah, balancing courage with calculated risk, confidence without overconfidence, halal business as protection from vice, relentless effort, purity from shirk — viewing business as ʿibaadat, sweetness of character in dealing, fulfilling obligations through zakat, and connecting business principles to marriage.</p><p>These qualities were mapped onto the conduct of a Dawoodi Bohra Mumin during Ashara Mubaraka itself. The majlis closed with the shahadat of Amirul Mumineen AS in the Kufa masjid.</p>`,
+    color: '#f4a261',
+    icon: 'coin',
     link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-7-1448h/"
   },
   {
     num: 8,
-    title: "Metallurgy & Craftsmanship",
-    date: "9th al-Muharram al-Haraam",
-    theme: "Forging character — the blacksmith's fire that tempers the soul.",
-    body: `<p>The eighth majlis drew upon the craft of metallurgy and the work of the blacksmith. Just as raw ore must be heated, hammered, and refined to produce a gleaming blade, the human soul is tempered through trials and tribulations.</p><p>The fire of Karbala, rather than destroying, refined and elevated — producing the most luminous example of sacrifice and devotion in human history.</p>`,
+    title: "Governance & Politics",
+    date: "9th al-Muharram al-Haraam (Tasuʿaa)",
+    theme: "Five types of siyaasat from Imam Ahmed al-Mastoor's AS Rasaʾil Ikhwan al-Safa, dedicated to Imam Hasan AS.",
+    body: `<p>Dedicated to Imam Hasan AS, this majlis explored five types of siyaasat: <strong>Nabawiyya</strong> — the Shariat reforming character; <strong>Mulukiyya</strong> — statecraft safeguarding the Shariat, illustrated by Imam Hasan's AS ruling on the ostrich-egg case; <strong>ʿAamma</strong> — public unity, illustrated by Imam Hasan's AS peace treaty with Muʿawiya to preserve lives for Karbala, alongside the historical relationship between the Dawoodi Bohra Duat and the British in India; <strong>Khaassa</strong> — governance of family through muhabbat; and <strong>Zaatiyya</strong> — self-governance and muhasabat.</p><p>The majlis closed with Syedna TUS's tearful reminder that the next day would be Ashura, followed by the shahadat narrations of Imam Husain AS and Imam Hasan AS.</p>`,
     color: '#ff6b6b',
+    icon: 'scale',
     link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-8-1448h/"
   },
   {
     num: 9,
-    title: "Education & Teaching",
-    date: "10th al-Muharram al-Haraam (Morning)",
-    theme: "The teacher's legacy — knowledge as the most enduring gift.",
-    body: `<p>The ninth discourse honoured the craft of teaching and education — the noblest of all professions. Syedna TUS spoke of the Aimmat and Duat as the supreme educators of humanity.</p><p>The waʿz of Ashara Mubaraka itself is the highest form of education: a curriculum of the soul, taught by the Dai who inherits the knowledge of the Prophets and Imams.</p>`,
-    color: '#a78bfa',
+    title: "Nadam & Istighfaar",
+    date: "10th al-Muharram al-Haraam (Ashura — Lailat & Morning)",
+    theme: "Contrition and seeking forgiveness — the foundation of success in every craft discussed over the previous days.",
+    body: `<p><strong>Lailat-e-Ashura:</strong> Syedna TUS recited verses of Syedna Abdul Husain Husamuddin RA lamenting the Karbala tragedy — the betrayal of a guest, the wounds inflicted on Imam Husain AS, and the plight of the unveiled Sayyidaat and orphaned children taken captive to Shaam.</p><p><strong>Ashura morning:</strong> The theme turned to nadam (contrition) and istighfaar (seeking forgiveness). Illustrative narrations included the angel Fitris regaining his wings through Imam Husain's AS blessing, the python-angel in Bani Dhadha's orchard, and Maulana Hurr's RA redemption on the battlefield. Syedna TUS also cautioned Mumineen against haram substances and practices, warned against suicide, and encouraged ziyarat travel.</p>`,
+    color: '#60a5fa',
+    icon: 'droplet',
     link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-9-10-1448h/"
   },
   {
     num: 10,
-    title: "The Essence of All Crafts",
-    date: "10th al-Muharram al-Haraam (ʿAashura)",
-    theme: "The culmination — all crafts converge in the remembrance of Imam Husain AS.",
-    body: `<p>The final and most poignant majlis brought together all the threads of the preceding discourses. Every craft, every skill, every talent finds its ultimate purpose in the zikr of Imam Husain AS.</p><p>The shahadat of Imam Husain AS is the treasure that encompasses all treasures — the supreme craft of sacrifice that teaches every soul the meaning of devotion, courage, and eternal love.</p>`,
+    title: "The Culmination — Maqtal",
+    date: "10th al-Muharram al-Haraam (Ashura Afternoon)",
+    theme: "The one hunar (skill) that matters above all: lamenting and weeping for Imam Husain AS.",
+    body: `<p>Syedna al-Dai al-Ajal TUS delivered the climactic martyrdom narration, framing the entire Ashara Mubaraka's theme of trades and skills around the one hunar that matters above all — lamenting and weeping for Imam Husain AS.</p><p>The account of Yazeed's court receiving the severed heads of the martyrs, and the defiant young servant of Ali Akbar AS, was narrated. The majlis, and the ten days, closed with prayers for Syedna's long life and health.</p>`,
     color: '#f472b6',
+    icon: 'star',
     link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-9-10-1448h/"
   }
 ];
@@ -1271,299 +1569,145 @@ function closeMajlis5() {
   document.getElementById('majlis5Panel').classList.remove('open');
 }
 
-// ===== MAJLIS MODAL =====
+// ===== ICON LIBRARY (simple line icons, one per craft) =====
+const iconPaths = {
+  scissors: '<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/>',
+  coin: '<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+  medical: '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>',
+  leaf: '<path d="M11 20A7 7 0 0 1 4 13c0-5 5-11 8-13 3 2 8 8 8 13a7 7 0 0 1-7 7Z"/><path d="M9 18c6-4 8-9 8-14"/>',
+  arch: '<path d="M4 21V10.5L12 4l8 6.5V21"/><path d="M9 21v-7a3 3 0 0 1 6 0v7"/>',
+  feather: '<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+  anchor: '<circle cx="12" cy="5" r="3"/><line x1="12" y1="8" x2="12" y2="21"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/>',
+  hammer: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94Z"/>',
+  book: '<path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2Z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7Z"/>',
+  star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  chip: '<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/>',
+  film: '<rect x="2" y="4" width="20" height="16" rx="2"/><line x1="7" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="17" y2="20"/><line x1="2" y1="9" x2="7" y2="9"/><line x1="2" y1="15" x2="7" y2="15"/><line x1="17" y1="9" x2="22" y2="9"/><line x1="17" y1="15" x2="22" y2="15"/>',
+  scale: '<path d="M12 3v18"/><path d="M5 8l-3.5 7a4 4 0 0 0 7 0Z"/><path d="M19 8l-3.5 7a4 4 0 0 0 7 0Z"/><path d="M5 8h14"/><path d="M8 21h8"/>',
+  droplet: '<path d="M12 2s7 8.5 7 13a7 7 0 0 1-14 0c0-4.5 7-13 7-13z"/>'
+};
+function iconSVG(name){
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${iconPaths[name] || iconPaths.star}</svg>`;
+}
+
+// ===== MAJLIS MODAL (pinned reading panel) =====
+let openMajlisIndex = null;
+
 function openMajlisModal(index) {
   const d = majlisData[index];
+  openMajlisIndex = index;
   document.getElementById('modalNumber').textContent = String(d.num).padStart(2, '0');
   document.getElementById('modalTag').textContent = `Majlis ${d.num} / 1448H`;
   document.getElementById('modalTitle').textContent = d.title;
   document.getElementById('modalDate').textContent = d.date;
   document.getElementById('modalBody').innerHTML = d.body;
   document.getElementById('majlisModalOverlay').classList.add('open');
+  document.querySelectorAll('.planet-stop').forEach((el, i) => {
+    el.classList.toggle('active', i === index);
+  });
+  const stage = document.getElementById('orbitStage');
+  if (stage) stage.classList.add('paused');
 }
 function closeMajlisModal() {
+  openMajlisIndex = null;
   document.getElementById('majlisModalOverlay').classList.remove('open');
+  document.querySelectorAll('.planet-stop').forEach(el => el.classList.remove('active'));
+  const stage = document.getElementById('orbitStage');
+  if (stage) stage.classList.remove('paused');
 }
 document.getElementById('modalClose').addEventListener('click', closeMajlisModal);
 
-// ===== THREE.JS PLANETARY ORBITS =====
-(function initThreeScene() {
-  const container = document.getElementById('three-canvas');
-  const W = container.clientWidth;
-  const H = container.clientHeight;
-  
-  // Scene
-  const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0xFBF8F2, 0.0016);
-  
-  // Camera
-  const camera = new THREE.PerspectiveCamera(60, W / H, 0.1, 3000);
-  camera.position.set(0, 170, 400);
-  camera.lookAt(0, 0, 0);
-  
-  // Renderer
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setSize(W, H);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setClearColor(0xFBF8F2, 1);
-  container.appendChild(renderer.domElement);
-  
-  // Lights
-  const ambientLight = new THREE.AmbientLight(0xfff4e0, 0.9);
-  scene.add(ambientLight);
-  
-  const pointLight = new THREE.PointLight(0xc9a84c, 2, 500);
-  pointLight.position.set(0, 0, 0);
-  scene.add(pointLight);
-  
-  const pointLight2 = new THREE.PointLight(0x1a8a5c, 1, 300);
-  pointLight2.position.set(100, 50, -100);
-  scene.add(pointLight2);
-  
-  // Central glowing orb (represents the kalam)
-  const centralGeo = new THREE.SphereGeometry(20, 64, 64);
-  const centralMat = new THREE.MeshStandardMaterial({
-    color: 0xc9a84c,
-    emissive: 0xc9a84c,
-    emissiveIntensity: 0.8,
-    metalness: 0.9,
-    roughness: 0.1,
+// Clicking the dim area of the overlay (not the panel itself) closes it —
+// clicking inside the panel, or scrolling it, never closes it anymore.
+document.getElementById('majlisModalOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'majlisModalOverlay') closeMajlisModal();
+});
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeMajlisModal();
+});
+
+// ===== CENTRAL KALAM NODE ("the sun") =====
+(function initKalamNode(){
+  const node = document.getElementById('kalamNode');
+  const card = document.getElementById('kalamCard');
+  let pinned = false;
+
+  function show(){ card.classList.add('open'); node.classList.add('active'); }
+  function hide(){ if(!pinned){ card.classList.remove('open'); node.classList.remove('active'); } }
+
+  node.addEventListener('mouseenter', show);
+  node.addEventListener('mouseleave', hide);
+  node.addEventListener('focus', show);
+  node.addEventListener('blur', hide);
+  node.addEventListener('click', (e) => {
+    e.stopPropagation();
+    pinned = !pinned;
+    if (pinned) show(); else hide();
   });
-  const centralOrb = new THREE.Mesh(centralGeo, centralMat);
-  scene.add(centralOrb);
-  
-  // Central glow sprite
-  const glowCanvas = document.createElement('canvas');
-  glowCanvas.width = 256;
-  glowCanvas.height = 256;
-  const ctx = glowCanvas.getContext('2d');
-  const gradient = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
-  gradient.addColorStop(0, 'rgba(201,168,76,0.6)');
-  gradient.addColorStop(0.4, 'rgba(201,168,76,0.15)');
-  gradient.addColorStop(1, 'rgba(201,168,76,0)');
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, 256, 256);
-  const glowTexture = new THREE.CanvasTexture(glowCanvas);
-  const glowMat = new THREE.SpriteMaterial({ map: glowTexture, transparent: true, opacity: 0.8 });
-  const glowSprite = new THREE.Sprite(glowMat);
-  glowSprite.scale.set(130, 130, 1);
-  scene.add(glowSprite);
-  
-  // Orbits and planets
-  const planets = [];
-  const orbitGroups = [];
-  const orbitRadii = [55, 78, 102, 128, 156, 186, 218, 252, 288, 326];
-  const orbitSpeeds = [0.0035, 0.003, 0.0026, 0.0022, 0.0019, 0.0016, 0.0014, 0.0012, 0.001, 0.0009];
-  const orbitTilts = [0.1, -0.15, 0.2, -0.1, 0.05, -0.2, 0.15, -0.05, 0.1, -0.12];
-  
+  document.addEventListener('click', (e) => {
+    if (pinned && !node.contains(e.target) && !card.contains(e.target)) {
+      pinned = false;
+      hide();
+    }
+  });
+})();
+
+// ===== ORBIT SYSTEM (ten worlds revolving around one sun) =====
+(function initOrbitSystem(){
+  const stage = document.getElementById('orbitStage');
+  const orbitTrack = document.getElementById('orbitTrack');
+  const ORBIT_DURATION = 110; // seconds for one full revolution — slow and stately
+
   majlisData.forEach((m, i) => {
-    // Orbit ring
-    const orbitGeo = new THREE.RingGeometry(orbitRadii[i] - 0.15, orbitRadii[i] + 0.15, 128);
-    const orbitMat = new THREE.MeshBasicMaterial({
-      color: new THREE.Color(m.color),
-      transparent: true,
-      opacity: 0.15,
-      side: THREE.DoubleSide,
-    });
-    const orbitMesh = new THREE.Mesh(orbitGeo, orbitMat);
-    orbitMesh.rotation.x = Math.PI / 2;
-    orbitMesh.rotation.y = orbitTilts[i];
-    scene.add(orbitMesh);
-    
-    // Planet group (for rotation)
-    const group = new THREE.Group();
-    group.rotation.y = orbitTilts[i];
-    
-    // Planet
-    const planetSize = 7 + (10 - i) * 0.55;
-    const planetGeo = new THREE.SphereGeometry(planetSize, 32, 32);
-    const planetMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(m.color),
-      emissive: new THREE.Color(m.color),
-      emissiveIntensity: 0.4,
-      metalness: 0.7,
-      roughness: 0.3,
-    });
-    const planetMesh = new THREE.Mesh(planetGeo, planetMat);
-    
-    // Position on orbit
-    const angle = (i / majlisData.length) * Math.PI * 2;
-    planetMesh.position.set(
-      Math.cos(angle) * orbitRadii[i],
-      0,
-      Math.sin(angle) * orbitRadii[i]
-    );
-    
-    planetMesh.userData = { index: i, data: m };
-    group.add(planetMesh);
-    scene.add(group);
-    
-    // Number badge — a small canvas-texture sprite that always faces the
-    // camera, sitting just above the planet, so its majlis number is
-    // legible at a glance even while the whole thing orbits.
-    const badgeCanvas = document.createElement('canvas');
-    badgeCanvas.width = 128; badgeCanvas.height = 128;
-    const bctx = badgeCanvas.getContext('2d');
-    bctx.fillStyle = '#FBF8F2';
-    bctx.beginPath();
-    bctx.arc(64, 64, 58, 0, Math.PI * 2);
-    bctx.fill();
-    bctx.lineWidth = 6;
-    bctx.strokeStyle = m.color;
-    bctx.stroke();
-    bctx.fillStyle = m.color;
-    bctx.font = 'bold 54px Georgia, serif';
-    bctx.textAlign = 'center';
-    bctx.textBaseline = 'middle';
-    bctx.fillText(String(m.num), 64, 70);
-    const badgeTex = new THREE.CanvasTexture(badgeCanvas);
-    const badgeMat = new THREE.SpriteMaterial({ map: badgeTex, transparent: true, depthTest: false });
-    const badgeSprite = new THREE.Sprite(badgeMat);
-    const badgeScale = planetSize * 0.95;
-    badgeSprite.scale.set(badgeScale, badgeScale, 1);
-    badgeSprite.position.set(0, planetSize + badgeScale * 0.55, 0);
-    planetMesh.add(badgeSprite);
-    
-    planets.push(planetMesh);
-    orbitGroups.push(group);
+    const angle = (360 / majlisData.length) * i; // evenly spaced around the ring
+
+    const arm = document.createElement('div');
+    arm.className = 'orbit-arm';
+    arm.style.setProperty('--start-angle', angle + 'deg');
+    arm.style.setProperty('--dur', ORBIT_DURATION + 's');
+
+    const slot = document.createElement('div');
+    slot.className = 'orbit-slot';
+
+    const counter = document.createElement('div');
+    counter.className = 'orbit-counter';
+    counter.style.setProperty('--start-angle', angle + 'deg');
+    counter.style.setProperty('--dur', ORBIT_DURATION + 's');
+
+    const stop = document.createElement('div');
+    stop.className = 'planet-stop';
+    stop.style.setProperty('--planet-c', m.color);
+    stop.innerHTML = `
+      <div class="planet-label">
+        <span class="planet-eyebrow">Majlis ${String(m.num).padStart(2,'0')}</span>
+        <span class="planet-icon-badge">${iconSVG(m.icon)}</span>
+        <span class="planet-title">${m.title}</span>
+      </div>
+      <div class="planet-orb-wrap">
+        <span class="planet-orbit-ring"></span>
+        <button class="planet-orb" aria-label="Open reflection for ${m.title}">
+          <span class="planet-number">${String(m.num).padStart(2,'0')}</span>
+        </button>
+      </div>
+      <span class="planet-reading-badge">Reading ↗</span>
+    `;
+
+    // Hover opens the full reflection immediately — no click required.
+    // A click is still wired up too, so touch devices (which can't hover) work fine.
+    stop.addEventListener('mouseenter', () => openMajlisModal(i));
+    stop.querySelector('.planet-orb').addEventListener('click', () => openMajlisModal(i));
+
+    counter.appendChild(stop);
+    slot.appendChild(counter);
+    arm.appendChild(slot);
+    orbitTrack.appendChild(arm);
   });
-  
-  // Stars background
-  const starsGeo = new THREE.BufferGeometry();
-  const starPositions = [];
-  for (let i = 0; i < 2200; i++) {
-    starPositions.push(
-      (Math.random() - 0.5) * 2400,
-      (Math.random() - 0.5) * 2400,
-      (Math.random() - 0.5) * 2400
-    );
-  }
-  starsGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
-  const starsMat = new THREE.PointsMaterial({ color: 0xB8923D, size: 0.6, transparent: true, opacity: 0.25 });
-  const stars = new THREE.Points(starsGeo, starsMat);
-  scene.add(stars);
-  
-  // Mouse interaction
-  const mouse = new THREE.Vector2();
-  const raycaster = new THREE.Raycaster();
-  let hoveredPlanet = null;
-  let isDragging = false;
-  let prevMouseX = 0;
-  let prevMouseY = 0;
-  let rotX = 0.3;
-  let rotY = 0;
-  let targetRotX = 0.3;
-  let targetRotY = 0;
-  
-  const tooltip = document.getElementById('planetTooltip');
-  
-  container.addEventListener('mousemove', (e) => {
-    const rect = container.getBoundingClientRect();
-    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-    
-    if (isDragging) {
-      const dx = e.clientX - prevMouseX;
-      const dy = e.clientY - prevMouseY;
-      targetRotY += dx * 0.005;
-      targetRotX += dy * 0.005;
-      targetRotX = Math.max(-0.8, Math.min(0.8, targetRotX));
-      prevMouseX = e.clientX;
-      prevMouseY = e.clientY;
-    }
-    
-    // Tooltip position
-    tooltip.style.left = e.clientX + 'px';
-    tooltip.style.top = e.clientY + 'px';
-  });
-  
-  container.addEventListener('mousedown', (e) => {
-    // Only start a camera drag if not currently hovering a planet
-    if (!hoveredPlanet) {
-      isDragging = true;
-      prevMouseX = e.clientX;
-      prevMouseY = e.clientY;
-    }
-  });
-  
-  window.addEventListener('mouseup', () => {
-    isDragging = false;
-  });
-  
-  // Animation loop
-  function animate() {
-    requestAnimationFrame(animate);
-    
-    // Rotate orbit groups — paused while any planet is hovered so the
-    // reader can study the content without it drifting away
-    if (!hoveredPlanet) {
-      orbitGroups.forEach((g, i) => {
-        g.rotation.y += orbitSpeeds[i];
-      });
-    }
-    
-    // Central orb pulse
-    const pulse = 1 + Math.sin(Date.now() * 0.002) * 0.05;
-    centralOrb.scale.set(pulse, pulse, pulse);
-    
-    // Camera rotation (drag)
-    rotX += (targetRotX - rotX) * 0.05;
-    rotY += (targetRotY - rotY) * 0.05;
-    
-    camera.position.x = 400 * Math.sin(rotY) * Math.cos(rotX);
-    camera.position.y = 400 * Math.sin(rotX);
-    camera.position.z = 400 * Math.cos(rotY) * Math.cos(rotX);
-    camera.lookAt(0, 0, 0);
-    
-    // Stars slow rotation
-    stars.rotation.y += 0.0001;
-    
-    // Raycasting for hover — this is now the ONLY way content opens,
-    // no click required. Hovering pauses rotation and opens the side
-    // card; moving away resumes rotation and closes it.
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(planets);
-    
-    if (intersects.length > 0) {
-      const planet = intersects[0].object;
-      if (hoveredPlanet !== planet) {
-        // Reset previous
-        if (hoveredPlanet) {
-          hoveredPlanet.material.emissiveIntensity = 0.4;
-          hoveredPlanet.scale.set(1, 1, 1);
-        }
-        hoveredPlanet = planet;
-        hoveredPlanet.material.emissiveIntensity = 1.1;
-        hoveredPlanet.scale.set(1.35, 1.35, 1.35);
-        container.style.cursor = 'pointer';
-        
-        document.getElementById('tooltipMajlis').textContent = `Majlis ${planet.userData.data.num}`;
-        document.getElementById('tooltipTitle').textContent = planet.userData.data.title;
-        tooltip.classList.add('visible');
-        openMajlisModal(planet.userData.index);
-      }
-    } else {
-      if (hoveredPlanet) {
-        hoveredPlanet.material.emissiveIntensity = 0.4;
-        hoveredPlanet.scale.set(1, 1, 1);
-        hoveredPlanet = null;
-        container.style.cursor = 'grab';
-        tooltip.classList.remove('visible');
-        closeMajlisModal();
-      }
-    }
-    
-    renderer.render(scene, camera);
-  }
-  animate();
-  
-  // Resize
-  window.addEventListener('resize', () => {
-    const w = container.clientWidth;
-    const h = container.clientHeight;
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    renderer.setSize(w, h);
+
+  // Hovering anywhere on the stage freezes every orbit in place so labels
+  // stop drifting while the person is reading or aiming for a world.
+  stage.addEventListener('mouseenter', () => stage.classList.add('paused'));
+  stage.addEventListener('mouseleave', () => {
+    if (openMajlisIndex === null) stage.classList.remove('paused');
   });
 })();
 </script>
