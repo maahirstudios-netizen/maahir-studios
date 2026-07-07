@@ -1243,10 +1243,45 @@ body{
   position:absolute;inset:0;z-index:1;pointer-events:none;
   background:radial-gradient(circle at 50% 45%,transparent 30%,var(--bg-deep) 92%);
 }
+
+/* ================= PREVIEW GATE ================= */
+/* Not real security — this is a static site with no backend, so a
+   technical visitor could still view-source their way past it. What this
+   DOES do: casual visitors (e.g. from a report link) see "Coming Soon"
+   instead of the real page, while you get in via a secret URL that your
+   browser then remembers. Secret key is set in the script right after
+   <body> opens below. */
+#comingSoon{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--bg-deep);color:var(--text-primary);padding:24px}
+#comingSoon .cs-badge{font-family:var(--font-body);font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold-dark);margin-bottom:26px}
+#comingSoon h1{font-family:var(--font-display);font-style:italic;font-size:clamp(2rem,5vw,3.2rem);margin-bottom:14px;color:var(--text-primary)}
+#comingSoon p{color:var(--text-secondary);font-family:var(--font-body);font-size:.95rem;max-width:360px;line-height:1.6}
+body.gated #realSite{display:none}
+body:not(.gated) #comingSoon{display:none}
 </style>
 </head>
-<body>
+<body class="gated">
+<script>
+// ==== PREVIEW GATE ====
+// Your access link: ashara.html?key=maahir
+// Visit it once and your browser remembers it (localStorage) from then on.
+(function(){
+  const SECRET_KEY = 'maahir';
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('key') === SECRET_KEY) {
+    localStorage.setItem('ashara_unlocked', '1');
+  }
+  if (localStorage.getItem('ashara_unlocked') === '1') {
+    document.body.classList.remove('gated');
+  }
+})();
+</script>
+<div id="comingSoon">
+  <div class="cs-badge">Maahir Studio</div>
+  <h1>Coming Soon</h1>
+  <p>This page is currently in development. Please check back soon.</p>
+</div>
 
+<div id="realSite">
 <!-- LOADING SCREEN -->
 <div id="loader">
   <div class="loader-ornament"></div>
@@ -1913,5 +1948,6 @@ window.addEventListener('keydown', (e) => {
   });
 })();
 </script>
+</div><!-- /realSite -->
 </body>
 </html>
