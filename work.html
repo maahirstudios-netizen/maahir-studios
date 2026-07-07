@@ -66,6 +66,16 @@ a{color:inherit}
   100%{transform:scale(1.22) translateX(7%)}
 }
 
+/* Wide single image (brochure, now one image) — image runs wide, text column narrows */
+.work-row.row-wide{gap:3vw}
+.work-row.row-wide .work-media{flex:0 0 80%;aspect-ratio:21/9}
+.work-row.row-wide .work-info{max-width:230px}
+.work-media.type-wide img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+
+/* Video — plays once when scrolled into view, then holds its last frame */
+.work-media.type-video video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+.work-media.type-video.img-missing video{display:none}
+
 .work-info{position:relative;z-index:2;flex:1;max-width:340px}
 .work-info-idx{font-family:var(--font-mono);font-size:.7rem;color:var(--gold);letter-spacing:.15em;margin-bottom:14px}
 .work-info h3{font-family:var(--font-serif);font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.1;margin-bottom:14px}
@@ -130,8 +140,8 @@ footer a{color:var(--gold);text-decoration:none}
 const projects = [
   {
     title: "Brochure for Mazar e Qutbi",
-    desc: "A two-page brochure is deceptively hard: you're asked to carry the full weight of a site's history, architecture, and visiting information on just two spreads, for an audience ranging from first-time visitors to lifelong devotees. The real challenge on this project was volume — the archival material we were handed could have filled twenty pages, and every stakeholder wanted their section to stay in. Rather than cutting content on request, we rebuilt the hierarchy from scratch: a modular grid that let photography carry the emotional weight while typography carried the facts, so nothing felt omitted even though most of it was. The final two pages read like a single unfolding story rather than a compressed pamphlet.",
-    media: { type: "slideshow", images: ["brochure-mazar-e-qutbi-page-1.jpg", "brochure-mazar-e-qutbi-page-2.jpg"] }
+    desc: "A two-page brochure is deceptively hard: you're asked to carry the full weight of a site's history, architecture, and visiting information on just two spreads, for an audience ranging from first-time visitors to lifelong devotees. The real challenge on this project was volume — the archival material we were handed could have filled twenty pages, and every stakeholder wanted their section to stay in. Rather than cutting content on request, we rebuilt the hierarchy from scratch: a modular grid that let photography carry the emotional weight while typography carried the facts, so nothing felt omitted even though most of it was. The final spread reads like a single unfolding story rather than a compressed pamphlet.",
+    media: { type: "wide", image: "brochure-mazar-e-qutbi-spread.jpg" }
   },
   {
     title: "Timeline for Mazar E Qutbi of Duat Mutlaqeens in Ahmedabad",
@@ -141,33 +151,46 @@ const projects = [
   {
     title: "Al Madrasa Tus Saifiyah — Timeline of Four Years' Journey",
     desc: "Four years of institutional life — hundreds of events, milestones, and moments — needed to become one coherent visual journey, without turning into a cluttered wall of dates. The brief kept growing as departments each wanted their events represented, which meant the real design problem was editorial: deciding what earns a place on the timeline and what gets folded into a supporting mention. We solved it by chaptering the four years visually, giving each year its own anchor and rhythm while keeping a single connecting thread running underneath, so the whole journey still reads as one continuous story rather than four separate ones stitched together.",
-    media: { type: "panzoom", image: "timeline-al-madrasa-tus-saifiyah.jpg" }
+    media: { type: "video", video: "timeline-al-madrasa-tus-saifiyah.mp4" }
   }
 ];
 
 const grid = document.getElementById('galleryGrid');
 projects.forEach((proj, i) => {
   const row = document.createElement('div');
-  row.className = 'work-row';
+  row.className = 'work-row' + (proj.media.type === 'wide' ? ' row-wide' : '');
 
   let mediaInner = '';
   let mediaTypeClass = '';
+  let labelText = '';
   if (proj.media.type === 'slideshow') {
     mediaTypeClass = 'type-slideshow';
     mediaInner = proj.media.images.map((fname, si) => `
       <div class="slide${si === 0 ? ' active' : ''}">
         <img src="${fname}" alt="${proj.title} — page ${si + 1}" loading="lazy" decoding="async" onerror="this.closest('.work-media').classList.add('img-missing')">
       </div>`).join('');
+    labelText = proj.media.images.join(' / ');
+  } else if (proj.media.type === 'wide') {
+    mediaTypeClass = 'type-wide';
+    mediaInner = `<img src="${proj.media.image}" alt="${proj.title}" loading="lazy" decoding="async" onerror="this.parentElement.classList.add('img-missing')">`;
+    labelText = proj.media.image;
+  } else if (proj.media.type === 'video') {
+    mediaTypeClass = 'type-video';
+    // muted + playsinline so autoplay is allowed by mobile browsers; loops
+    // continuously, triggered the first time it scrolls into view (below).
+    mediaInner = `<video src="${proj.media.video}" muted playsinline loop preload="metadata" onerror="this.parentElement.classList.add('img-missing')"></video>`;
+    labelText = proj.media.video;
   } else {
     mediaTypeClass = 'type-panzoom';
     mediaInner = `<img src="${proj.media.image}" alt="${proj.title}" loading="lazy" decoding="async" onerror="this.parentElement.classList.add('img-missing')">`;
+    labelText = proj.media.image;
   }
 
   row.innerHTML = `
     <div class="work-row-num">${String(i + 1).padStart(2, '0')}</div>
     <div class="work-media ${mediaTypeClass}">
       ${mediaInner}
-      <div class="work-media-label">${proj.media.type === 'slideshow' ? proj.media.images.join(' / ') : proj.media.image}</div>
+      <div class="work-media-label">${labelText}</div>
     </div>
     <div class="work-info">
       <div class="work-info-idx">${String(i + 1).padStart(2, '0')} / ${String(projects.length).padStart(2, '0')}</div>
@@ -185,6 +208,20 @@ projects.forEach((proj, i) => {
       active = (active + 1) % slides.length;
       slides[active].classList.add('active');
     }, 4200);
+  }
+
+  // Video: start playing (looped) the first time it scrolls into view.
+  if (proj.media.type === 'video') {
+    const videoEl = row.querySelector('video');
+    const videoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          videoEl.play().catch(() => {});
+          videoObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    videoObserver.observe(videoEl);
   }
 });
 
